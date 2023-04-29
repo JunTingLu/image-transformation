@@ -1,0 +1,298 @@
+<html>
+  <head>
+	<!-- <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
+    <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script> -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script> -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous"></link>
+    <!-- <link href='//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css' rel='stylesheet'></link> -->
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet"></link>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Popper.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.3/umd/popper.min.js"></script>
+    <!-- Bootstrap 4 -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.css" rel="stylesheet"></link>
+  </head>
+  <style>
+    @import url(../static/img_uploader.css);
+    @import url('https://fonts.googleapis.com/css?family=Cardo:400i|Rubik:400,700&display=swap');
+    @import url(../static/img_scss.css);
+ </style>
+<body>
+
+  <div class="container fluid">
+    <div class="col-20  mx-auto">
+      <div class="jumbotron bg-primary  text-white"> 
+        <h1>Image-to-Painting Demo</h1>  
+       </div>    
+
+    <td><h4>I leverage the principle of cyclegan to implement a style converter that can select crop size and style settings before conversion from input photos. i hope you enjoy it all !</h4></td>
+    <main id="page-content" class="page-content">
+      <div class="card">
+        <div class="content">
+          <h2 class="title">Mountain View</h2>
+          <p class="copy">Check out all of these gorgeous mountain trips with beautiful views of, you guessed it, the mountains</p>
+          <button class="card-btn">View Trips</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="content">
+          <h2 class="title">To The Beach</h2>
+          <p class="copy">Plan your next beach trip with these fabulous destinations</p>
+          <button class="card-btn" id="card-btn">View Trips</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="content">
+          <h2 class="title">Desert Destinations</h2>
+          <p class="copy">It's the desert you've always dreamed of</p>
+          <button class="card-btn" id="card-btn">Book Now</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="content">
+          <h2 class="title">Explore The Galaxy</h2>
+          <p class="copy">Seriously, straight up, just blast off into outer space today</p>
+          <button class="card-btn" id="card-btn">Book Now</button>
+        </div>
+      </div>
+    </main>  
+  </div>
+      <br>
+
+
+
+      
+  <div class="col-8 col-md-8">
+    <div id="upload">
+    <form id="file-upload-form" method='post' enctype="multipart/form-data">
+        <label class="btn btn-info">
+          <input type="file" name="file" id='upload-file' multiple="multiple" accept="image/png" style="display:none;">
+          <i class="fa fa-photo"></i> Upload images
+        </label>
+      </div>
+        <button  id='submitbtn'class="btn btn-info" type="submit">
+          <i class="fa fa-share"></i> Submit
+        </button>
+    </form>
+
+    <!-- progress bar -->
+    <div class="progress" style="display: none;">
+      <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+           0%
+      </div>
+    </div>
+
+      <div class="container">
+       <!-- 導覽列 -->
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+              <a class="navbar-brand" href="#"></a>
+              <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                <ul class="navbar-nav">
+                  <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      Function 
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                      <button id="crop_img" class="dropdown-item"><i class="fa fa-scissors"></i> Crop image</button>
+                      <button class="dropdown-item"><i class="fa fa-undo"></i> Transform</button>
+                      <button class="dropdown-item" id='takephoto'><i class="fa fa-camera"></i> Take photo</button>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </nav>
+
+  <br>
+    <div class="row">
+       <div class="col-md-6" >
+
+          <img id="oldImg" src="https://dummyimage.com/500x500/f7f2f7/a2a3ab/&text=Upload image" alt="image-placehoder" class="img-thumbnail" data-target="image-preview">
+          
+  <div class="modal fade" id="crop-modal" tabindex="-1" role="dialog" aria-labelledby="crop-modal-label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+          <div id="crop">
+            <h3>02. Crop / Preview</h3>
+            <div class="block">
+            <div class="stage">
+              <button class="btn" id="prev" onclick="cropCancel();">PREV</button>
+              <button class="btn" id="next" onclick="cropResult();">NEXT</button>
+              <div id="croppie"></div>
+            </div>
+            </div>
+          </div>
+          
+          <div id="result">
+            <h3>03. Result</h3>
+            <button id="close" onclick="cropCancel();">Close</button>
+            <div class="block">
+            <div class="stage">
+              <img src="" alt="Cropped image">
+            </div>
+            </div>
+          </div>
+        </div>
+   </div> 
+
+  </div>
+</div>
+</div>
+
+   
+  </div>
+  <br>
+     <div class="row">
+       <div class=" col-md-6 " >
+        <div class="input-group mb-3">
+            <button  class="btn btn-info" id='download'><i class="fa fa-arrow-circle-down"></i> Save image</button>
+            <button  class="btn btn-info" id='reset'><i class="fa fa-repeat"></i> Reset</button>
+        </div>    
+          <div class="img-wrapper">
+          <img id="newImg" src="data:image/jpg;base64,{{img_b64}}" alt="">
+        </div>
+       </div>  
+   </div> 
+  </div>    
+         <div id='image2painting'></div>
+         <div id="newImgInfo"></div>
+            
+  </div>  
+<script>
+  (function($){
+          const $upload = $('#upload'),
+              $crop = $('#crop'),
+              $result = $('#result'),
+              $croppie = $('#croppie');
+              // 按下按鈕觸發跳出剪裁框
+              $start_crop=$('#crop_img');
+            var cr,
+              cr_img = '',
+              img_w = 320,
+              img_h = 320,
+              isCrop = 0;
+
+            //支援上傳檔案判斷
+            $(function(){
+            if (window.File && window.FileList && window.FileReader)
+              fileInit();
+            else
+              alert('您的裝置不支援圖片上傳');
+            });
+
+            //********* file select/drop *********
+            var fileselect = document.getElementById("upload-file");
+            function fileInit(){
+            // file select
+            fileselect.addEventListener("change", FileSelectHandler, false);
+            // is XHR2 available?
+            console.log(159)
+            var xhr = new XMLHttpRequest();
+
+            }
+
+            // file selection
+            function FileSelectHandler(e) {
+            var files = e.target.files || e.dataTransfer.files;
+            if(files[0] && files[0].type.match('image.*')){
+              var reader = new FileReader();
+              reader.onload = function (e) {
+              $upload.hide();
+              if(cr_img == '') { //第一次上傳
+                cr_img = e.target.result;
+                cropInit();
+              }
+              else {// 綁定照片
+                cr_img = e.target.result;
+                bindCropImg();
+              }
+              $crop.fadeIn(300);
+              }
+              reader.readAsDataURL(files[0]);
+            }
+            }
+
+            //********* crop *********
+            //裁切設定
+            function cropInit(){
+              console.log(217)
+              console.log(219)
+            cr = $croppie.croppie({
+              viewport: {
+              width: img_w,
+              height: img_h
+              },
+              boundary: {
+              width: img_w,
+              height: img_h
+              },
+              mouseWheelZoom: false,
+              enableOrientation: true
+            })
+
+
+            // 跳出剪裁框
+            function startcrop(){
+              $('#crop-modal').modal('show');
+            }
+            // 執行剪裁
+            $('#start_crop').on('click', function(){
+                startcrop();
+            });
+
+
+            $(".cr-slider-wrap").append('<button id="cr-rotate" onClick="cropRotate(-90);">↻ Rotate</button>');
+            bindCropImg();
+            }
+
+            //綁定圖片
+            function bindCropImg() {
+            cr.croppie('bind', {
+              url: cr_img
+            });
+            }
+
+            //旋轉按鈕
+            function cropRotate(deg) {
+            cr.croppie('rotate', parseInt(deg));
+            }
+
+            //取消裁切
+            function cropCancel() {
+            if($upload.is(':hidden')){
+              $upload.fadeIn(300).siblings().hide();
+              fileselect.value = "";
+              isCrop = 0;
+            }
+            }
+
+            //圖片裁切
+            function cropResult() {
+            //判斷isCrop是否為false 
+            if(!isCrop){
+              isCrop = 1;
+              cr.croppie('result', {
+              type: 'canvas', // canvas(base64)|html
+              size: {width:img_w, height:img_h}, //'viewport'|'original'|{width:500, height:500}
+              format: 'jpeg', //'jpeg'|'png'|'webp'
+              quality: 1 //0~1
+              }).then(function (resp) {
+              $crop.hide();
+              $result.find('img').attr('src', resp);
+              $result.fadeIn(300);
+              });
+              }
+            }
+          })(jQuery)
+</script>
+        <script src="../static/img_uploader.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>  
+</body>
+</html>

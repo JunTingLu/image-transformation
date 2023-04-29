@@ -1,0 +1,208 @@
+$GY: #ddd
+$DGY: #6c757d
+$BK: #222
+$PL: #425389
+$track: #c8cccf
+$thumb: #8193a2
+
+*, *:before,*::after
+  box-sizing: border-box
+body
+  color: $BK
+  text-align: center
+  background-color: #dfe6ec
+  width: 100%
+  min-height: 100vh
+h1
+  font-size: 3em
+  color: $BK
+  span
+    color: $DGY
+    font: italic 300 1rem/1.5 calibri
+    display: block
+button
+  border: 0
+  cursor: pointer
+  transition: all .3s ease-out
+  &:focus
+    outline: 0
+/*croppie*/
+#img-crop
+  width: 100%
+  height: 100vh
+  display: flex
+  justify-content: center
+  position: relative
+  h3
+    color: #2f3848
+    font-size: 1.2em
+  .block
+    border: 12px solid #fff
+    border-radius: 1em
+    box-shadow: 0 20px 60px -2px rgba(28,43,56,.2)
+    background-color: lighten(#dfe6ec,5%)
+    .stage
+      width: 320px
+      height: 320px
+      position: relative
+  #upload
+    label#filedrag
+      display: block
+      width: 100%
+      height: 100%
+      background: url("//img.icons8.com/ios/96/c8cccf/upload-2.png") 50% 50% no-repeat
+      background-size: 25% auto
+      transition: background .3s ease
+      cursor: pointer
+      &.hover
+        background-image: url("//img.icons8.com/ios/96/c8cccf/upload-2-filled.png")
+    input[type="file"]
+      display: none
+  #crop
+    display: none
+    .btn
+      color: #fff
+      width: 7em
+      height: 2.5em
+      border-radius: 3px
+      background-color: $PL
+      position: absolute
+      top: 50%
+      transition: background .3s ease-out
+      transform: translateY(-50%)
+      &:hover
+        background-color: lighten($PL,10%)
+      &#prev
+        left: 0
+        transform: translateX(-130%)
+      &#next
+        right: 0
+        transform: translateX(130%)
+    .cr-boundary
+      position: relative
+      overflow: hidden
+      z-index: 1
+      .cr-image
+        position: absolute
+        top: 0
+        left: 0
+        transform-origin: 0 0
+        z-index: -1
+        max-width: none
+      .cr-viewport
+        margin: auto
+        position: absolute
+        top: 0
+        right: 0
+        left: 0
+        box-shadow: 0 0 0 900px #d9d9d9
+        z-index: 0
+      .cr-overlay
+        position: absolute
+        z-index: 2
+        cursor: move
+    /******** Range Input ********/
+    .cr-slider-wrap
+      width: 100%
+      height: 2em
+      position: absolute
+      top: 100%
+      transform: translateY(100%)
+      z-index: 99
+      display: flex
+      .cr-slider
+        width: 75%
+        background-color: transparent
+      //webkit
+      .cr-slider
+        -webkit-appearance: none
+        &::-webkit-slider-runnable-track
+          width: 100%
+          height: 4px
+          background-color: $track
+          border: 0
+          border-radius: 1em
+        &::-webkit-slider-thumb
+          -webkit-appearance: none
+          width: 16px
+          height: 16px
+          margin-top: -6px
+          background-color: $thumb
+          border-radius: 50%
+          border: none
+          transform: scale(1)
+          transition: transform .3s
+        &:hover
+          &::-webkit-slider-thumb
+            transform: scale(1.25)
+        &:focus
+          outline: none
+          &::-webkit-slider-thumb
+            background-color: $PL
+      //ff
+      .cr-slider
+        //border: 1px solid white/*fix for FF unable to apply focus style bug */
+        &::-moz-range-track
+          width: 100%
+          height: 4px
+          background-color: $track
+          border: 0
+          border-radius: 1em
+        &::-moz-range-thumb
+          height: 16px
+          width: 16px
+          margin-top: -6px
+          background-color: $thumb
+          border-radius: 50%
+          border: none
+          transform: scale(1)
+          transition: transform .3s
+        &:hover
+          &::-moz-range-thumb
+            transform: scale(1.25)
+        &:-moz-focusring
+          outline: 1px solid white
+          outline-offset: -1px
+          &::-moz-range-thumb
+            background-color: $PL
+      //ms
+      .cr-slider
+        &::-ms-track
+          width: 300px
+          height: 4px
+          background: transparent
+          border-color: transparent
+          border-width: 6px 0
+          color: transparent
+        &::-ms-fill-lower, &::-ms-fill-upper
+          background: $track
+          border-radius: 10px
+        &::-ms-thumb
+          border: none
+          height: 16px
+          width: 16px
+          border-radius: 50%
+          background-color: $thumb
+      #cr-rotate
+        color: $thumb
+        text-align: right
+        background-color: transparent
+        flex: 1
+  #result
+    display: none
+    #close
+      width: 50px
+      height: 50px
+      background: url("//img.icons8.com/material/48/c8cccf/multiply.png") 50% 50% no-repeat
+      background-size: 80%
+      position: fixed
+      top: 0
+      right: 0
+      z-index: 2
+      cursor: pointer
+      &:hover
+        background-image: url("//img.icons8.com/material/48/8193a2/multiply.png")
+    img
+      width: 100%
+      height: 100%
+      display: block
