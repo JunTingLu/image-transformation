@@ -1,3 +1,4 @@
+#%%
 import numpy as np
 import pandas as pd
 import os, math, sys
@@ -13,7 +14,7 @@ from torchvision.models import vgg19
 import torchvision.transforms as transforms
 from torch.utils.data import DataLoader, Dataset
 from torchvision.utils import save_image, make_grid
-import plotly
+import plotly  
 from scipy import signal
 import plotly.express as px
 import plotly.graph_objects as go
@@ -24,7 +25,10 @@ from sklearn.model_selection import train_test_split
 from tensorboardX import SummaryWriter
 from keras.callbacks import TensorBoard
 from tensorboard import notebook
+import pickle
+import pynvml
 
+print(pynvml.nvmlInit())
 #%%
 """ input parameters"""
 # 查詢gpu數
@@ -130,7 +134,9 @@ class ImageDataset(Dataset):
         else:
             image_B = Image.open(self.files_B[index % len(self.files_B)])
         """
+
         # [revised] More efficient way
+        """ 確認圖片大小邊界是否一致 """
         if self.unaligned:
             index_B = random.randint(0, len(self.files_B) - 1)
         else:
@@ -148,7 +154,6 @@ class ImageDataset(Dataset):
 
     def __len__(self):
         Maximum = max(len(self.files_A), len(self.files_B))
-        
         return Maximum
 #%%
 """ image preproccessing """
@@ -178,12 +183,12 @@ test_transforms_ = transformGenerator()
 # 權重初始化
 def weights_init_normal(m):
     # [revised] for readability
+    # 判斷是否存在Conv2d layer
     if isinstance(m, nn.Conv2d):
         torch.nn.init.normal_(m.weight.data, 0.0, 0.02)
         if hasattr(m, "bias") and m.bias is not None:
             torch.nn.init.constant_(m.bias.data, 0.0)
-    #elif classname.find("BatchNorm2d") != -1:
-
+    # 判斷是否存在BatchNorm2d layer
     elif isinstance(m, nn.BatchNorm2d):
         torch.nn.init.normal_(m.weight.data, 1.0, 0.02)
         torch.nn.init.constant_(m.bias.data, 0.0)
@@ -194,10 +199,6 @@ class ResidualBlock(nn.Module):
         super(ResidualBlock, self).__init__()
 
         layers = []
-
-        # in_featuresCopy = in_features* expansion
-        #print(in_features)
-
         for _ in range(num_blocks):
             layers += [
                 nn.ReflectionPad2d(1),
@@ -211,14 +212,10 @@ class ResidualBlock(nn.Module):
 
             if use_dropout:
                 layers += [nn.Dropout(0.2)]
-
+        """ use Sequential collect "list" of layers"""
         self.block = nn.Sequential(*layers)
 
-        #print(in_features)
-
     def forward(self, x):
-        #print(x.shape)
-        #print(self.block(x).shape)
         return x + self.block(x)
 
 class GeneratorResNet(nn.Module):
@@ -266,13 +263,14 @@ class GeneratorResNet(nn.Module):
         model += [nn.ReflectionPad2d(channels), 
                   nn.Conv2d(out_features, channels, 7), 
                   nn.Tanh()]
-
+        
+        """ use Sequential collect "list" of model """
         self.model = nn.Sequential(*model)
 
     def forward(self, x):
         return self.model(x)
 
-
+# just like use Discriminator object,and import nn.Module api
 class Discriminator(nn.Module):
     def __init__(self, input_shape):
         super(Discriminator, self).__init__()
@@ -293,7 +291,8 @@ class Discriminator(nn.Module):
 
         """ 
         *discriminator_block
-        the '*' here is for disclose the list()
+        the '*' here is for disclose the list() 
+        使用*拆解discriminator_block
         """
         self.model = nn.Sequential(
             *discriminator_block(channels, 64, normalize=False),
@@ -314,7 +313,16 @@ class Discriminator(nn.Module):
 #%%
 """ define the discriminator/generator and setup gpu """
 ### Train CycleGAN
-torch.cuda.is_available()
+
+# run with gpu
+if torch.cuda.is_available():
+    device = torch.device("cuda")
+    print("GPU is available")
+else:
+    device = torch.device("cpu")
+    print("GPU is not available")
+
+
 # Losses criterion
 criterion_GAN = torch.nn.MSELoss()
 criterion_cycle = torch.nn.MSELoss()
@@ -346,11 +354,6 @@ else:
     G_BA.apply(weights_init_normal)
     D_A.apply(weights_init_normal)
     D_B.apply(weights_init_normal)
-
-# run with gpu
-
-
-
 
 #%%
 """ function of  loss"""
@@ -434,7 +437,7 @@ def train(train_dataloader,log):
     fake_A_buffer = ReplayBuffer()
     fake_B_buffer = ReplayBuffer()
 
-    train_counter = []
+    # train_counter = []
     train_losses_gen, train_losses_id, train_losses_gan, train_losses_cyc = [], [], [], []
     train_losses_disc, train_losses_disc_a, train_losses_disc_b = [], [], []
 
@@ -509,6 +512,7 @@ def train(train_dataloader,log):
 def test_D(D_type, real_A, fake_A, real_B, fake_B, fake, valid, fake_A_buffer, fake_B_buffer):
   if D_type == 0:
     ### Test Discriminator-A
+    """ eval() 直接執行運算D_A結果 """
     D_A.eval()
     # Real loss
     loss_real = criterion_GAN(D_A(real_A), valid)
@@ -530,7 +534,11 @@ def test_D(D_type, real_A, fake_A, real_B, fake_B, fake, valid, fake_A_buffer, f
     loss_D_B = (loss_real + loss_fake) / 2
     return loss_D_B
   
-""" testing.... """  
+""" testing....
+only save pth in test, because it would happen
+over-fitting in training process, so the test
+result is more insignificant
+"""  
 def test(save_path,test_dataloader,train_dataloader,fake_A_buffer,fake_B_buffer): 
     
   #### Testing (model reload and show results)
@@ -655,9 +663,8 @@ learning_rate = 0.001
 batch_size = 1
 num_epochs = 10
 # define dataset class
-Dataset_Monet='/content/gdrive/MyDrive/ColabNotebooks/cycleGAN_datasets/monet2photo/monet2photo/'
-Dataset_Vango='/content/gdrive/MyDrive/ColabNotebooks/cycleGAN_datasets/vangogh2photo/vangogh2photo/'
-
+Dataset_Monet='D:/test_files/cycleGAN_datasets/monet2photo/monet2photo/'
+Dataset_Vango='D:/test_files/cycleGAN_datasets/vangogh2photo/vangogh2photo/'
 dataset_path=[Dataset_Monet,Dataset_Vango]
 
 for i in range(len(dataset_path)):
@@ -667,7 +674,7 @@ for i in range(len(dataset_path)):
   # log process
   log = dataset_path[i]+log_dir
   # training 
-  train_dataloader,fake_A_buffer,fake_B_buffer = train(train_loader,log)
+  train_dataloader,fake_A_buffer,fake_B_buffer = train(train_loader,log).to(device)
   
   # testing
   test(dataset_path[i],test_loader,train_dataloader,fake_A_buffer,fake_B_buffer)
