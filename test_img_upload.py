@@ -57,8 +57,12 @@ def show_img(input_img):
     img_b64=base64.b64encode(buffer.getvalue()).decode()
     return  img_b64
 
+""" load the model """
+class dicriminater(nn.Module):
+    def __init__(self,*arg):
+        pass
 
-# 預先載入model
+
 def load_model(input_img):
     print(input_img.shape)
     num_residual_blocks=9
@@ -114,6 +118,6 @@ def upload_data():
 
 
 if __name__ == '__main__':
-    host=''
-    port=''
+    host='127.0.0.1'
+    port='5000'
     app.run(debug=True)
