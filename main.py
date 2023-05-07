@@ -41,13 +41,13 @@ torch.__version__
 torch.cuda.is_available()
 ### Settings 
 # path to pre-trained models
-pretrained_model_path = "/content/gdrive/MyDrive/ColabNotebooks/cycleGAN_datasets/vangogh2photo/vangogh2photo/"
+# pretrained_model_path = "/content/gdrive/MyDrive/ColabNotebooks/cycleGAN_datasets/vangogh2photo/vangogh2photo/"
 # epoch to start training from
 epoch_start = 1
 # number of epochs of training
 n_epochs = 3
 # name of the dataset
-dataset_path = "/content/gdrive/MyDrive/ColabNotebooks/cycleGAN_datasets/vangogh2photo/vangogh2photo/"
+# dataset_path = "/content/gdrive/MyDrive/ColabNotebooks/cycleGAN_datasets/vangogh2photo/vangogh2photo/"
 # size of the batches"
 batch_size = 1
 # adam: learning rate
@@ -209,7 +209,7 @@ class ResidualBlock(nn.Module):
                 nn.Conv2d(in_features * expansion, in_features, 3),
                 nn.InstanceNorm2d(in_features),
             ]
-
+            # to avoid over-fitting (only left 80%)
             if use_dropout:
                 layers += [nn.Dropout(0.2)]
         """ use Sequential collect "list" of layers"""
@@ -596,6 +596,7 @@ def test(save_path,test_dataloader,train_dataloader,fake_A_buffer,fake_B_buffer)
         loss_disc += loss_D.item(); 
         loss_disc_a += loss_D_A.item(); 
         loss_disc_b += loss_D_B.item()
+        # batch_idx start from 0
         tqdm_bar.set_postfix(Gen_loss=loss_gen/(batch_idx+1), identity=loss_id/(batch_idx+1), adv=loss_gan/(batch_idx+1), cycle=loss_cyc/(batch_idx+1),
                             Disc_loss=loss_disc/(batch_idx+1), disc_a=loss_disc_a/(batch_idx+1), disc_b=loss_disc_b/(batch_idx+1))
         

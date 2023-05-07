@@ -96,12 +96,37 @@
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                       <button id="crop_img" class="dropdown-item"><i class="fa fa-scissors"></i> Crop image</button>
                       <button class="dropdown-item"><i class="fa fa-undo"></i> Transform</button>
-                      <button class="dropdown-item" id='takephoto'><i class="fa fa-camera"></i> Take photo</button>
+                      <button class="dropdown-item" id='take-photo' data-toggle="modal" data-target="#camera-modal"><i class="fa fa-camera"></i> Take photo</button>
                     </div>
                   </li>
                 </ul>
               </div>
             </nav>
+
+            <div class="modal fade" id="camera-modal" tabindex="-1" role="dialog" aria-labelledby="camera-modal-label" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="camera-modal-label">Take photo</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <div id="camera-window">
+                      <button id='camera' class="btn btn-primary" >Camera</button>
+                      <button id='screenshot' class="btn btn-primary">Screenshot</button>
+                      <button id='stop' class="btn btn-secondary" >Stop</button>
+                      <button id='cancel' class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                      <div id="screenshot-container">
+                        <video id='video' src=""></video>
+                      </div>
+                    </div>
+                    <canvas id='canvas'></canvas>
+                  </div>
+                </div>
+              </div>
+            </div>
 
   <br>
     <div class="row">
@@ -287,5 +312,6 @@
           })(jQuery)
 </script>
 <script src="../static/img_uploader.js"></script>
+<script src="../static/take_photo.js"></script>
 </body>
 </html>

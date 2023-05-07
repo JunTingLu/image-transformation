@@ -13,11 +13,23 @@ import torch
 from torch import unsqueeze
 import torch.nn as nn
 from main import GeneratorResNet, ResidualBlock
+import pickle
+from configparser import ConfigParser
+from bark import SAMPLE_RATE, generate_audio, preload_models
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] ='C:/Users/User/Desktop/python_jupyter/for_job/static/files/'  # 文件储存地址
 app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024 # 限制大小 24MB
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
+
+""" Bark api setup """
+# 設定檔讀取(*.ini)
+cfg=ConfigParser()
+path=cfg.read("config.ini",encoding="utf-8")
+bark_api_key=cfg.get('bark-api','bark_key') 
+# download and load all models
+preload_models() 
 
 
 #檢查上傳檔案是否合法的函數
@@ -57,23 +69,20 @@ def show_img(input_img):
     img_b64=base64.b64encode(buffer.getvalue()).decode()
     return  img_b64
 
+
 """ load the model """
-class dicriminater(nn.Module):
-    def __init__(self,*arg):
-        pass
-
-
 def load_model(input_img):
     print(input_img.shape)
-    num_residual_blocks=9
-    in_features=256
     # 引入模型
     # model=cycleGAN_model()
     # 模型加載至cpu上
     model_state=torch.load('./cycleGAN_demo/static/pth-filesG_BA.pth',map_location=torch.device('cpu'))
-    # model.eval()
-    # 導入權重
-    # model.load_state_dict(model_state)
+    # 模型保存為pickle 文件
+    with open('model.pickle','wb') as f:
+        pickle.dump(model_state,f)
+    # 導入權重 load pickle 
+    with open('model.pickle','rb') as f:
+        generator=pickle.load(f)
     # preprocessing input img
     transform = transforms.Compose([
     # 將PIL Image轉換為Tensor，並除255使數值界於0~1之間
@@ -82,14 +91,13 @@ def load_model(input_img):
     # 產生均值為0標準差為1的分布
     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
 ])
-    img_transformed=transform(input_img)
-    # 在0維上增加新的一維
-    img_tensor = img_transformed.unsqueeze(0)
-    # 進行轉換 
-    with torch.no_grad():
-        # output_img = model(img_tensor)
-        
-        return True
+    img_tensor=transform(input_img)
+
+    # 丟入generator中預測
+    generator.eval()
+    generator_img=generator(img_tensor)
+
+    return 'success!'
 
 
 
