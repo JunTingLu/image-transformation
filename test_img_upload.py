@@ -15,22 +15,11 @@ import torch.nn as nn
 from main import GeneratorResNet, ResidualBlock
 import pickle
 from configparser import ConfigParser
-from bark import SAMPLE_RATE, generate_audio, preload_models
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] ='C:/Users/User/Desktop/python_jupyter/for_job/static/files/'  # 文件储存地址
 app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024 # 限制大小 24MB
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
-
-
-""" Bark api setup """
-# 設定檔讀取(*.ini)
-cfg=ConfigParser()
-path=cfg.read("config.ini",encoding="utf-8")
-bark_api_key=cfg.get('bark-api','bark_key') 
-# download and load all models
-preload_models() 
-
 
 #檢查上傳檔案是否合法的函數
 def allowed_file(filename):
