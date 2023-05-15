@@ -1,7 +1,7 @@
 <html>
   <head>
     <!-- Jquery -->
-    <script src="https://unpkg.com/jquery@3.6.0/dist/jquery.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.js" integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E=" crossorigin="anonymous"></script>
    <!-- Bootstrap-4 CSS-->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.2.1/dist/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
     <!-- jQuery -->
@@ -73,13 +73,6 @@
         </button>
     </form>
 
-    <!-- progress bar -->
-    <div class="progress" style="display: none;">
-      <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
-           0%
-      </div>
-    </div>
-
       <div class="container">
        <!-- 導覽列 -->
             <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -131,36 +124,26 @@
   <br>
     <div class="row">
        <div class="col-md-6" >
-
           <img id="oldImg" src="https://dummyimage.com/500x500/f7f2f7/a2a3ab/&text=Upload image" alt="image-placehoder" class="img-thumbnail" data-target="image-preview">
           
-  <div class="modal fade" id="crop-modal" tabindex="-1" role="dialog" aria-labelledby="crop-modal-label" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-          <div id="crop">
-            <h3>02. Crop / Preview</h3>
-            <div class="block">
-            <div class="stage">
-              <button class="btn" id="prev" onclick="cropCancel();">PREV</button>
-              <button class="btn" id="next" onclick="cropResult();">NEXT</button>
-              <div id="croppie"></div>
+      <div class="modal fade" id="cropImagePop" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title" id="myModalLabel">
+                CROP IMAGE</h4>
             </div>
+            <div class="modal-body">
+            <div id="upload-demo" class="center-block"></div>
             </div>
-          </div>
-          
-          <div id="result">
-            <h3>03. Result</h3>
-            <button id="close" onclick="cropCancel();">Close</button>
-            <div class="block">
-            <div class="stage">
-              <img src="" alt="Cropped image">
+           <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="button" id="cropImageBtn" class="btn btn-primary">Crop</button>
             </div>
-            </div>
-          </div>
-        </div>
-   </div> 
-
-  </div>
+      </div>
+      </div>
+      </div>
 </div>
 </div>
 
@@ -173,145 +156,15 @@
             <button  class="btn btn-info" id='download'><i class="fa fa-arrow-circle-down"></i> Save image</button>
             <button  class="btn btn-info" id='reset'><i class="fa fa-repeat"></i> Reset</button>
         </div>    
-          <div class="img-wrapper">
           <img id="newImg" src="data:image/jpg;base64,{{img_b64}}" alt="">
-        </div>
        </div>  
    </div> 
   </div>    
          <div id='image2painting'></div>
-         <div id="newImgInfo"></div>
-            
+         <div id="newImgInfo"></div>        
   </div>  
-<script>
-  (function($){
-          const 
-              $upload = $('#upload'),
-              $crop = $('#crop'),
-              $result = $('#result'),
-              $croppie = $('#croppie'),
-              $startcropping=$('#crop_img');// 按下按鈕觸發跳出剪裁框
-              
-            var cr,
-              cr_img = '',
-              img_w = 320,
-              img_h = 320,
-              isCrop = 0;
-
-            //支援上傳檔案判斷
-            $(function(){
-            if (window.File && window.FileList && window.FileReader)
-              fileInit();
-            else
-              alert('您的裝置不支援圖片上傳');
-            });
-
-            //********* file select/drop *********
-            var fileselect = document.getElementById("upload-file");
-            function fileInit(){
-            // file select
-            fileselect.addEventListener("change", FileSelectHandler, false);
-            // is XHR2 available?
-            console.log(159)
-            var xhr = new XMLHttpRequest();
-
-            }
-
-            // file selection
-            function FileSelectHandler(e) {
-            var files = e.target.files || e.dataTransfer.files;
-            if(files[0] && files[0].type.match('image.*')){
-              var reader = new FileReader();
-              reader.onload = function (e) {
-              $upload.hide();
-              if(cr_img == '') { //第一次上傳
-                cr_img = e.target.result;
-                cropInit();
-              }
-              else {// 綁定照片
-                cr_img = e.target.result;
-                bindCropImg();
-              }
-              $crop.fadeIn(300);
-              }
-              reader.readAsDataURL(files[0]);
-            }
-            }
-
-            //********* crop *********
-            //裁切設定
-            function cropInit(){
-              console.log(217)
-              cr = $croppie.croppie({
-              viewport: {
-              width: img_w,
-              height: img_h
-              },
-              boundary: {
-              width: img_w,
-              height: img_h
-              },
-              mouseWheelZoom: false,
-              enableOrientation: true
-            })
-
-            // 跳出剪裁框
-            function startcrop(){
-              console.log(241)
-              $('#crop-modal').modal('show');
-            }
-
-            // 執行剪裁
-            $("#startcropping").on('click', function(){
-              console.log(245)
-                startcrop();
-            });
-            
-            $(".cr-slider-wrap").append('<button id="cr-rotate" onClick="cropRotate(-90);">↻ Rotate</button>');
-            bindCropImg();
-            }
-
-            //綁定圖片
-            function bindCropImg() {
-            cr.croppie('bind', {
-              url: cr_img
-            });
-            }
-
-            //旋轉按鈕
-            function cropRotate(deg) {
-            cr.croppie('rotate', parseInt(deg));
-            }
-
-            //取消裁切
-            function cropCancel() {
-            if($upload.is(':hidden')){
-              $upload.fadeIn(300).siblings().hide();
-              fileselect.value = "";
-              isCrop = 0;
-            }
-            }
-
-            //圖片裁切
-            function cropResult() {
-            //判斷isCrop是否為false 
-            if(!isCrop){
-              isCrop = 1;
-              cr.croppie('result', {
-              type: 'canvas', // canvas(base64)|html
-              size: {width:img_w, height:img_h}, //'viewport'|'original'|{width:500, height:500}
-              format: 'jpeg', //'jpeg'|'png'|'webp'
-              quality: 1 //0~1
-              }).then(function (resp) {
-              $crop.hide();
-              $result.find('img').attr('src', resp);
-              $result.fadeIn(300);
-              });
-              }
-            }
-          })(jQuery)
-</script>
-<script src="../static/img_uploader.js"></script>
+  <script src="../static/crop.js"></script>
+<!-- <script src="../static/img_uploader.js"></script> -->
 <script src="../static/take_photo.js"></script>
 </body>
 </html>

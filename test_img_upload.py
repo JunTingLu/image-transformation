@@ -10,13 +10,16 @@ from PIL import Image
 import io
 from cv2 import imwrite
 import torch
-from torch import unsqueeze
-import torch.nn as nn
-from main import GeneratorResNet, ResidualBlock
+# from torch import unsqueeze
+# import torch.nn as nn
+# from main import GeneratorResNet, ResidualBlock
 import pickle
 from configparser import ConfigParser
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
+
 app.config['UPLOAD_FOLDER'] ='C:/Users/User/Desktop/python_jupyter/for_job/static/files/'  # 文件储存地址
 app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024 # 限制大小 24MB
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
@@ -29,16 +32,19 @@ def allowed_file(filename):
 # 取得圖片之base64編碼並傳至後端，後端將base64轉換回圖片進行預測
 def proccessing_img(data):
     # 讀取圖片內容
-    data = request.files['file'].read()
+    # data = request.files['file'].read()
     # 將data(bytes) 字串寫入緩衝區，並轉成PIL物件
+    content_type = data.split(b'\r\n')[3].decode('utf-8')
+    print(37,content_type)
+    # 取得Content-Type中的圖片格式
     img=Image.open(io.BytesIO(data))
-    print('img',img)
-    img2arr=np.array(img)
-    resized=cv2.resize(img2arr,(256,256))
-    print(resized.shape)
+    print(41)
+    # img2arr=np.array(img)
+    # resized=cv2.resize(img2arr,(256,256))
+    # print(39,resized.shape)
     """ 測試將原圖轉成灰階 """
     # gray_img=img.convert('L')
-    return resized
+    return 'resized'
 
 
 def show_img(input_img):
@@ -95,26 +101,28 @@ def upload_data():
     path_list=[]
     # 初始化img_b64為空值
     img_b64=''
+    img_process=''
     # 接收json 參數類型
     if request.method=='POST': 
-        img=request.files.getlist('file')
-        path_list.append(img)
-        for index in img:
-            if allowed_file(index.filename):
+        img=request.get_data()
+        # print(103,img)
+        # for index in img:
+            # if allowed_file(index.filename):
                 # 圖片處理
-                img_process=proccessing_img(index)
+        img_process=proccessing_img(img)
+        print(110,img_process)
                 # 進行圖像轉換
-                generated_img=load_model(img_process)
+                # generated_img=load_model(img_process)
                 # print(generated_img.shape)
                 # 將圖片返回前端模板
-                img_b64=show_img(img_process)
-                print(img_b64)         
+        img_b64=show_img(img_process)
+                # print(img_b64)         
                 # index.save(os.path.join(app.config['UPLOAD_FOLDER'],secure_filename(index.filename)))    
-    return render_template('img_upload.html',img_b64=img_b64)
-    # return jsonify({'data':{'result':img_b64,'type':'image'}})
+    # return render_template('img_upload.html',img_b64=img_b64)
+        return jsonify({'data':{'result':img_b64,'type':'image'}})
 
 
 if __name__ == '__main__':
-    host='127.0.0.1'
-    port='5000'
-    app.run(debug=True)
+    host_ip='127.0.0.1'
+    host_port='5000'
+    app.run(host=host_ip,port=host_port,debug=True)
