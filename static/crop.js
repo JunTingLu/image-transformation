@@ -6,7 +6,6 @@ var $uploadCrop,
         if (input.files && input.files[0]) {
             var reader = new FileReader();
             reader.onload = function (e) {
-                // $('.upload-demo').addClass('ready');
                 $('#cropImagePop').modal('show');
                 rawImg = e.target.result;
             }
@@ -22,18 +21,23 @@ var $uploadCrop,
         enforceBoundary: false,
         enableExif: true
     });
+    
     // 綁地欲剪裁圖片
     $('#cropImagePop').on('shown.bs.modal', function(){
-        // alert('Shown pop');
         $uploadCrop.croppie('bind', {
             url: rawImg
         }).then(function(){
-            console.log('jQuery bind complete');
+            console.log('bind complete');
         });
     });
 
-    $('#upload-file').on('change', function () { imageId = $(this).data('id'); tempFilename = $(this).val();
-        $('#cancelCropBtn').data('id', imageId); readFile(this); });
+
+    $('#upload-file').on('change', function () { 
+        imageId = $(this).data('id'); 
+        tempFilename = $(this).val();
+        $('#cancelCropBtn').data('id', imageId);
+        readFile(this); 
+    });
     
     $('#cropImageBtn').on('click', function (ev) {
         $uploadCrop.croppie('result', {
