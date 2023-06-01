@@ -6,6 +6,7 @@ import time, datetime
 import glob, itertools
 import argparse, random
 import torch
+from torch import cuda,FloatTensor
 import torch.nn as nn
 import torch.nn.functional as F
 from torchvision import datasets
@@ -26,19 +27,18 @@ from tensorboardX import SummaryWriter
 from keras.callbacks import TensorBoard
 from tensorboard import notebook
 import pickle
-import pynvml
-
-print(pynvml.nvmlInit())
+from torch import optim
+import os
 #%%
 """ input parameters"""
 # 查詢gpu數
-torch.cuda.device_count()
+print(37,cuda.device_count())
 
 random.seed(42)
 import warnings
 warnings.filterwarnings("ignore")
 torch.__version__
-torch.cuda.is_available()
+cuda.is_available()
 ### Settings 
 # path to pre-trained models
 # pretrained_model_path = "/content/gdrive/MyDrive/ColabNotebooks/cycleGAN_datasets/vangogh2photo/vangogh2photo/"
@@ -78,7 +78,6 @@ lambda_cyc = 10.0
 lambda_id = 5.0
 # Development / Debug Mode
 debug_mode = False
-
 #%%
 """ define image buffer and load data function """
 ### Define Utilities
@@ -185,13 +184,13 @@ def weights_init_normal(m):
     # [revised] for readability
     # 判斷是否存在Conv2d layer
     if isinstance(m, nn.Conv2d):
-        torch.nn.init.normal_(m.weight.data, 0.0, 0.02)
+        nn.init.normal_(m.weight.data, 0.0, 0.02)
         if hasattr(m, "bias") and m.bias is not None:
-            torch.nn.init.constant_(m.bias.data, 0.0)
+            nn.init.constant_(m.bias.data, 0.0)
     # 判斷是否存在BatchNorm2d layer
     elif isinstance(m, nn.BatchNorm2d):
-        torch.nn.init.normal_(m.weight.data, 1.0, 0.02)
-        torch.nn.init.constant_(m.bias.data, 0.0)
+        nn.init.normal_(m.weight.data, 1.0, 0.02)
+        nn.init.constant_(m.bias.data, 0.0)
 
 
 class ResidualBlock(nn.Module):
@@ -306,7 +305,6 @@ class Discriminator(nn.Module):
             nn.ZeroPad2d((1, 0, 1, 0)),
             nn.Conv2d(512, 1, 4, padding=1)
         )
-
     def forward(self, img):
         return self.model(img)
     
@@ -315,7 +313,7 @@ class Discriminator(nn.Module):
 ### Train CycleGAN
 
 # run with gpu
-if torch.cuda.is_available():
+if cuda.is_available():
     device = torch.device("cuda")
     print("GPU is available")
 else:
@@ -324,11 +322,11 @@ else:
 
 
 # Losses criterion
-criterion_GAN = torch.nn.MSELoss()
-criterion_cycle = torch.nn.MSELoss()
-criterion_identity = torch.nn.L1Loss()
+criterion_GAN = nn.MSELoss()
+criterion_cycle = nn.MSELoss()
+criterion_identity = nn.L1Loss()
 
-cuda = torch.cuda.is_available()
+cuda = cuda.is_available()
 input_shape = (channels, img_height, img_width)
 
 # Initialize generator and discriminator
@@ -397,6 +395,8 @@ def train_D(D_type, real_A, fake_A, real_B, fake_B, fake, valid, fake_A_buffer, 
     D_A.train()
     optimizer_D_A.zero_grad()
     # Real loss
+    print(399,D_A)
+    print(400,valid)
     loss_real = criterion_GAN(D_A(real_A), valid)
     # Fake loss (on batch of previously generated samples)
     fake_A_ = fake_A_buffer.push_and_pop(fake_A)
@@ -432,7 +432,6 @@ def train(train_dataloader,log):
 
     # define the tensor
     Tensor = torch.cuda.FloatTensor if cuda else torch.Tensor
-
     # Buffers of previously generated samples
     fake_A_buffer = ReplayBuffer()
     fake_B_buffer = ReplayBuffer()
@@ -440,10 +439,11 @@ def train(train_dataloader,log):
     # train_counter = []
     train_losses_gen, train_losses_id, train_losses_gan, train_losses_cyc = [], [], [], []
     train_losses_disc, train_losses_disc_a, train_losses_disc_b = [], [], []
+    # print(442,torch.cuda.memory_summary())
+
 
     # test_counter = [2*idx*len(train_dataloader.dataset) for idx in range(epoch_start+1, n_epochs+1)]
     # test_losses_gen, test_losses_disc = [], []
-
     for epoch in range(epoch_start, n_epochs):
         
         #### Training
@@ -653,9 +653,9 @@ def DataLoad(dataset_path,batch_size,transforms_):
 
 
 # optimizer
-optimizer_G = torch.optim.Adam(itertools.chain(G_AB.parameters(), G_BA.parameters()), lr=lr, betas=(b1, b2))
-optimizer_D_A = torch.optim.Adam(D_A.parameters(), lr=lr, betas=(b1, b2))
-optimizer_D_B = torch.optim.Adam(D_B.parameters(), lr=lr, betas=(b1, b2))
+optimizer_G = optim.Adam(itertools.chain(G_AB.parameters(), G_BA.parameters()), lr=lr, betas=(b1, b2))
+optimizer_D_A = optim.Adam(D_A.parameters(), lr=lr, betas=(b1, b2))
+optimizer_D_B = optim.Adam(D_B.parameters(), lr=lr, betas=(b1, b2))
 # log with process
 log_dir='logs_result/'
 
@@ -664,9 +664,9 @@ learning_rate = 0.001
 batch_size = 1
 num_epochs = 10
 # define dataset class
-Dataset_Monet='D:/test_files/cycleGAN_datasets/monet2photo/monet2photo/'
+# Dataset_Monet='D:/test_files/cycleGAN_datasets/monet2photo/monet2photo/'
 Dataset_Vango='D:/test_files/cycleGAN_datasets/vangogh2photo/vangogh2photo/'
-dataset_path=[Dataset_Monet,Dataset_Vango]
+dataset_path=[Dataset_Vango]
 
 for i in range(len(dataset_path)):
 
@@ -675,10 +675,10 @@ for i in range(len(dataset_path)):
   # log process
   log = dataset_path[i]+log_dir
   # training 
-  train_dataloader,fake_A_buffer,fake_B_buffer = train(train_loader,log).to(device)
+  train_dataloader,fake_A_buffer,fake_B_buffer, loss_gen,loss_disc = train(train_loader,log)
   
   # testing
-  test(dataset_path[i],test_loader,train_dataloader,fake_A_buffer,fake_B_buffer)
+#   test(dataset_path[i],test_loader,train_dataloader,fake_A_buffer,fake_B_buffer)
   print('Finished!')
 
 

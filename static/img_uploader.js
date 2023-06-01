@@ -4,17 +4,18 @@
     const submit=document.querySelector('#submitbtn')
     const img = document.querySelector('#oldImg')
     const img_display=document.querySelector('#newImg')
-    let selectedFile;
+    // let selectedFile;
+    let rawImg;
 
-function upload_file(){
-    myFile.addEventListener('change', function(e){
-        selectedFile = e.target.files[0]
-        img.src = URL.createObjectURL(selectedFile)
-        img.clientWidth=256;
-        img.clientHeight=256;  
-        console.log(12,img)
-    });
-}   
+// function upload_file(){
+//     myFile.addEventListener('change', function(e){
+//         selectedFile = e.target.files[0]
+//         img.src = URL.createObjectURL(selectedFile)
+//         img.clientWidth=256;
+//         img.clientHeight=256;  
+//         console.log(12,img)
+//     });
+// }   
 
 function submited(){
     submit.addEventListener('click',()=>{

@@ -11,7 +11,7 @@
         const Screenshot = document.querySelector('#screenshot')
         const oldImg=document.querySelector('#oldImg')
         const cameraWindow=document.querySelector('#camera-window')
-        const takePhoto=document.querySelector('#take-photo')
+        const takePhoto=document.querySelector('#takephoto')
         const cancel=document.querySelector('#cancel')
         const screenshotContainer = document.getElementById('screenshot-container');
 
@@ -19,6 +19,7 @@
         // show in window
         cameraWindow.style.display='block';
         camera.addEventListener('click',()=>{
+                console.log(22,video)
                 navigator.mediaDevices.getUserMedia(constraints).then
                 (stream => {
                     cameraStream = stream
@@ -32,7 +33,7 @@
                     video.style.left = '50%';
                     video.style.top = '50%';
                     video.style.transform = 'translate(-50%, -50%)';
-
+                    console.log(36,video)
                 }).catch(err=>{
                 alert('open camera fail')
             });

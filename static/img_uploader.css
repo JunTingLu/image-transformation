@@ -43,7 +43,7 @@
   background-color: #d55bf4;
 }
 .btn:focus {
-  outline: 1px dashed rgb(238, 243, 86);
+  outline: 1px dashed rgb(199, 40, 223);
   outline-offset: 3px;
 } 
 
