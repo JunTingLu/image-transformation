@@ -5,7 +5,6 @@
     const img = document.querySelector('#oldImg')
     const img_display=document.querySelector('#newImg')
     // let selectedFile;
-    let rawImg;
 
 // function upload_file(){
 //     myFile.addEventListener('change', function(e){

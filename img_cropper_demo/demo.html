@@ -27,8 +27,8 @@ label.cabinet input.file{
 }
 
 #upload-demo{
-	width: 256px;
-	height: 256px;
+	width: 400px;
+	height: 400px;
   padding-bottom:25px;
 }
 
@@ -94,6 +94,7 @@ $(".gambar").attr("src","https://dummyimage.com/256x256/f7f2f7/a2a3ab/&text=Uplo
 							enforceBoundary: false,
 							enableExif: true
 						});
+						
 						// 綁地欲剪裁圖片
 						$('#cropImagePop').on('shown.bs.modal', function(){
 							// alert('Shown pop');
@@ -104,20 +105,22 @@ $(".gambar").attr("src","https://dummyimage.com/256x256/f7f2f7/a2a3ab/&text=Uplo
 				        	});
 						});
 
-						$('.item-img').on('change', function () { imageId = $(this).data('id'); 
-							tempFilename = $(this).val();
-							$('#cancelCropBtn').data('id', imageId); readFile(this); });
+						$('.item-img').on('change', function () { 
+							// imageId = $(this).data('id'); 
+							// tempFilename = $(this).val();
+							// $('#cancelCropBtn').data('id', imageId); 
+							readFile(this); });
 						
-						$('#cropImageBtn').on('click', function (ev) {
-							$uploadCrop.croppie('result', {
-								type: 'base64',
-								format: 'jpeg',
-								size: {width: 150, height: 200}
-							}).then(function (resp) {
-								$('#item-img-output').attr('src', resp);
-								$('#cropImagePop').modal('hide');
-							});
-						});
+						// $('#cropImageBtn').on('click', function (ev) {
+						// 	$uploadCrop.croppie('result', {
+						// 		type: 'base64',
+						// 		format: 'jpeg',
+						// 		size: {width: 350, height: 300}
+						// 	}).then(function (resp) {
+						// 		$('#item-img-output').attr('src', resp);
+						// 		$('#cropImagePop').modal('hide');
+						// 	});
+						// });
 </script>
 </body>
 </html>

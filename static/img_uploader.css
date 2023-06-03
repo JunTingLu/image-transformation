@@ -69,3 +69,10 @@
   outline: 1px dashed rgb(211, 83, 236);
   outline-offset: 3px;
 } 
+
+/* crop window */
+.upload-demo{
+  width: 400px;
+	height: 400px;
+  padding-bottom:20px;
+}
