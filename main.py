@@ -33,21 +33,13 @@ import os
 """ input parameters"""
 # 查詢gpu數
 print(37,cuda.device_count())
-
-random.seed(42)
-import warnings
-warnings.filterwarnings("ignore")
 torch.__version__
 cuda.is_available()
 ### Settings 
-# path to pre-trained models
-# pretrained_model_path = "/content/gdrive/MyDrive/ColabNotebooks/cycleGAN_datasets/vangogh2photo/vangogh2photo/"
 # epoch to start training from
 epoch_start = 1
 # number of epochs of training
 n_epochs = 3
-# name of the dataset
-# dataset_path = "/content/gdrive/MyDrive/ColabNotebooks/cycleGAN_datasets/vangogh2photo/vangogh2photo/"
 # size of the batches"
 batch_size = 1
 # adam: learning rate
@@ -439,8 +431,6 @@ def train(train_dataloader,log):
     # train_counter = []
     train_losses_gen, train_losses_id, train_losses_gan, train_losses_cyc = [], [], [], []
     train_losses_disc, train_losses_disc_a, train_losses_disc_b = [], [], []
-    # print(442,torch.cuda.memory_summary())
-
 
     # test_counter = [2*idx*len(train_dataloader.dataset) for idx in range(epoch_start+1, n_epochs+1)]
     # test_losses_gen, test_losses_disc = [], []
@@ -539,12 +529,11 @@ only save pth in test, because it would happen
 over-fitting in training process, so the test
 result is more insignificant
 """  
-def test(save_path,test_dataloader,train_dataloader,fake_A_buffer,fake_B_buffer): 
+def test(save_path,test_dataloader,fake_A_buffer,fake_B_buffer): 
     
   #### Testing (model reload and show results)
   # define the tensorpip
   Tensor = torch.cuda.FloatTensor if cuda else torch.Tensor
-  # test_counter = [2*idx*len(train_dataloader.dataset) for idx in range(epoch_start+1, n_epochs+1)]
   test_losses_gen, test_losses_disc = [], []
   # save_path='/content/gdrive/MyDrive/ColabNotebooks/cycleGAN_datasets/vangogh2photo/vangogh2photo/'
 
@@ -584,8 +573,8 @@ def test(save_path,test_dataloader,train_dataloader,fake_A_buffer,fake_B_buffer)
         # Total loss
         loss_G = loss_GAN + lambda_cyc * loss_cycle + lambda_id * loss_identity
 
-        loss_D_A = test_D(0, real_A, fake_A, real_B, fake_B, fake, valid)
-        loss_D_B = test_D(1, real_A, fake_A, real_B, fake_B, fake, valid)
+        loss_D_A = test_D(0, real_A, fake_A, real_B, fake_B, fake, valid,fake_A_buffer,fake_B_buffer)
+        loss_D_B = test_D(1, real_A, fake_A, real_B, fake_B, fake, valid,fake_A_buffer,fake_B_buffer)
         loss_D = (loss_D_A + loss_D_B) / 2
         
         ### Log Progress
@@ -600,29 +589,36 @@ def test(save_path,test_dataloader,train_dataloader,fake_A_buffer,fake_B_buffer)
         tqdm_bar.set_postfix(Gen_loss=loss_gen/(batch_idx+1), identity=loss_id/(batch_idx+1), adv=loss_gan/(batch_idx+1), cycle=loss_cyc/(batch_idx+1),
                             Disc_loss=loss_disc/(batch_idx+1), disc_a=loss_disc_a/(batch_idx+1), disc_b=loss_disc_b/(batch_idx+1))
         
-    # If at sample interval save image
-    # if random.uniform(0,1)<1:
-    if epoch % n_epochs==0:
-        # Arrange images along x-axis
-        real_A = make_grid(real_A, nrow=1, normalize=True)
-        real_B = make_grid(real_B, nrow=1, normalize=True)
-        fake_A = make_grid(fake_A, nrow=1, normalize=True)
-        fake_B = make_grid(fake_B, nrow=1, normalize=True)
-        # Arange images along y-axis
-        image_grid = torch.cat((real_A, fake_B), -1)
-        save_image(image_grid, f"save_path{epoch}_{batch_idx}.png", normalize=False)
+        # If at sample interval save image
+        # if random.uniform(0,1)<1:
+        if epoch % n_epochs==0:
+            # Arrange images along x-axis
+            real_A = make_grid(real_A, nrow=1, normalize=True)
+            real_B = make_grid(real_B, nrow=1, normalize=True)
+            fake_A = make_grid(fake_A, nrow=1, normalize=True)
+            fake_B = make_grid(fake_B, nrow=1, normalize=True)
+            # Arange images along y-axis
+            image_grid = torch.cat((real_A, fake_B), -1)
+            save_image(image_grid, f"save_path{epoch}_{batch_idx}.png", normalize=False)
 
-    test_losses_gen.append(loss_gen/len(test_dataloader))
-    test_losses_disc.append(loss_disc/len(test_dataloader))
+        test_losses_gen.append(loss_gen/len(test_dataloader))
+        test_losses_disc.append(loss_disc/len(test_dataloader))
 
-    # Save model checkpoints
-    # len(test_losses_gen)-1為測試集生成損失列表的最後一個元素的索引(n從0開始)
-    if np.argmin(test_losses_gen) == len(test_losses_gen)-1:
-      # Save model checkpoints
-      torch.save(G_AB.state_dict(), create_folder(save_path)+"G_AB.pth")
-      torch.save(G_BA.state_dict(), create_folder(save_path)+"G_BA.pth")
-      torch.save(D_A.state_dict(), create_folder(save_path)+"D_A.pth")
-      torch.save(D_B.state_dict(), create_folder(save_path)+"D_B.pth")  
+        # Save model checkpoints
+        # len(test_losses_gen)-1為測試集生成損失列表的最後一個元素的索引(n從0開始)
+        if np.argmin(test_losses_gen) == len(test_losses_gen)-1:
+
+            """save as pickle """
+            mymodel=GeneratorResNet()
+            serialized_model=pickle.dumps(mymodel)
+            with open('./mymodel.pickle','wb') as f:
+                f.write(serialized_model)
+
+            # Save model checkpoints
+            torch.save(G_AB.state_dict(), create_folder(save_path)+"G_AB.pth")
+            torch.save(G_BA.state_dict(), create_folder(save_path)+"G_BA.pth")
+            torch.save(D_A.state_dict(), create_folder(save_path)+"D_A.pth")
+            torch.save(D_B.state_dict(), create_folder(save_path)+"D_B.pth")  
 
 #%%
 """ function of create new folder """
@@ -664,9 +660,11 @@ learning_rate = 0.001
 batch_size = 1
 num_epochs = 10
 # define dataset class
-# Dataset_Monet='D:/test_files/cycleGAN_datasets/monet2photo/monet2photo/'
-Dataset_Vango='D:/test_files/cycleGAN_datasets/vangogh2photo/vangogh2photo/'
-dataset_path=[Dataset_Vango]
+Dataset_monet='./monet2photo/monet2photo/'
+Dataset_vango='./vangogh2photo/vangogh2photo/'
+Dataset_ukiyoe='./ukiyoe2photo/ukiyoe2photo/'
+Dataset_cezanne='./cezanne2photo/cezanne2photo/'
+dataset_path=[Dataset_monet]
 
 for i in range(len(dataset_path)):
 
@@ -676,9 +674,8 @@ for i in range(len(dataset_path)):
   log = dataset_path[i]+log_dir
   # training 
   train_dataloader,fake_A_buffer,fake_B_buffer, loss_gen,loss_disc = train(train_loader,log)
-  
   # testing
-#   test(dataset_path[i],test_loader,train_dataloader,fake_A_buffer,fake_B_buffer)
+  test(dataset_path[i],test_loader,fake_A_buffer,fake_B_buffer)
   print('Finished!')
 
 

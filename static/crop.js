@@ -58,6 +58,5 @@ var $uploadCrop,
             $('#oldImg').attr('src', resp);
             $('#cropImagePop').modal('hide');
         });
-        console.log(57,$uploadCrop)
     });
 

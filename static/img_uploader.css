@@ -6,7 +6,7 @@
   }
 
   h1{
-    color:#03dac6;
+    color:#0f17f1;
   }
   body{
     background-color: rgb(107, 102, 102);
@@ -28,6 +28,11 @@
   #submitbtn{
     margin-left: 10px;
   }
+
+/* function button */
+#crop_img:hover{
+ background-color: #63eaf4;
+}
 
 #tools{
   background-color: #29d6c5;

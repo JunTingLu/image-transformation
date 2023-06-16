@@ -4,6 +4,8 @@
         const open =document.querySelector('#open')
         const video =document.querySelector('#video')
         const Stop =document.querySelector('#stop')
+        const selected =document.querySelector('#select')
+        const to_oldimg=document.querySelector('#oldImg')
         const constraints = { audio: true, video: { width:400, height:400 }}
         // 擷取照片傳至canvas中
         const canvas = document.querySelector('#canvas');
@@ -38,6 +40,13 @@
                 alert('open camera fail')
             });
          });
+        
+        // select the photo
+        selected.addEventListener('click',()=>{
+            const new_oldimg=document.createElement('div')
+            new_oldimg.width=width
+            new_oldimg.height=height
+        })
 
         // stop screen 
         Stop.addEventListener('click',()=>{
