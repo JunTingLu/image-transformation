@@ -599,7 +599,7 @@ def test(save_path,test_dataloader,fake_A_buffer,fake_B_buffer):
             fake_B = make_grid(fake_B, nrow=1, normalize=True)
             # Arange images along y-axis
             image_grid = torch.cat((real_A, fake_B), -1)
-            save_image(image_grid, f"save_path{epoch}_{batch_idx}.png", normalize=False)
+            save_image(image_grid, save_path+"{}.png".format(epoch), normalize=False)
 
         test_losses_gen.append(loss_gen/len(test_dataloader))
         test_losses_disc.append(loss_disc/len(test_dataloader))

@@ -3,13 +3,13 @@
           box-sizing: border-box;
 }
 
-body {
+/* body {
   color: #222;
   text-align: center;
   background-color: #dfe6ec;
   width: 100%;
   min-height: 100vh;
-}
+} */
 
 h1 {
   font-size: 3em;

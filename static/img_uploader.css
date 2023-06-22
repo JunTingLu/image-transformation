@@ -12,8 +12,9 @@
     background-color: rgb(107, 102, 102);
   }
 
-  #title{
+  #webtitle{
     text-align: center;
+    width:100%;
   }
 
   #content{
@@ -30,8 +31,31 @@
   }
 
 /* function button */
+#col1{
+  background-color: #b9b2b2;
+  position: relative;
+  right: 10%;
+}
+
+#col2{
+  background-color: #b9b2b2;
+  position: relative;
+  left: 10%;
+}
+
+.arrow{
+  margin: auto;
+  font-size: 30px;
+  text-align: center;
+  color: #06c9b6;
+}
+
 #crop_img:hover{
  background-color: #63eaf4;
+}
+
+#transform:hover{
+  background-color: #63eaf4;
 }
 
 #tools{

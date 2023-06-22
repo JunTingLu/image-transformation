@@ -20,17 +20,18 @@
     @import url(../static/img_scss.css);
  </style>
 <body>
-  <div id='title' class="jumbotron bgtext-white" style="background-color: #333337;"> 
-    <h1 style="color:#82e9e9">Image-to-Painting Demo</h1>  
+  <div id='webtitle' class="jumbotron bgtext-white" style="background-color: #333337;"> 
+    <h1 style="color:#82e9e9 ;font-size: 60px;">Image-to-Painting Demo</h1>  
    </div> 
   <div class="container fluid">
     <div class="col-20  mx-auto">
-    <td><h4>I leverage the principle of cyclegan to implement a style converter that can select crop size and style settings before conversion from input photos. i hope you enjoy it all !</h4></td>
+    <td><h4 style="text-align: center;color:azure">I leverage the principle of cyclegan to implement a style converter that can select cro</h4></td>
+    <br>
     <main id="page-content" class="page-content">
       <div class="card">
         <div class="content">
           <h2 class="title">Mountain View</h2>
-          <p class="copy">Check out all of these gorgeous mountain trips with beautiful views of, you guessed it, the mountains</p>
+          <p class="copy">Check out all of these gorgeous mountain trips with beautiful vi</p>
           <button class="card-btn">View Trips</button>
         </div>
       </div>
@@ -57,7 +58,8 @@
       </div>
     </main>  
   </div>
-      <br>
+</div> 
+  <br>
 
       <div class="row">
         <div class="col-md-6" >
@@ -83,10 +85,10 @@
       </div>
   </div>
 
-  <div class="row">   
-    <div class="col">
-      <div id="upload">
-        <form id="file-upload-form" method='post' enctype="multipart/form-data">
+  <div class="row"> 
+    <div class="col" id="col1">
+        <div id="upload">
+        <!-- <form id="file-upload-form" method='post' enctype="multipart/form-data"> -->
           <label class="btn btn-info">
             <input type="file" name="file" id='upload-file' multiple="multiple" accept="image/png" style="display:none;">
             <i class="fa fa-photo"></i> Upload images
@@ -94,39 +96,46 @@
           <label  id='submitbtn'class="btn btn-info" type="submit">
             <i class="fa fa-share"></i> Submit
           </label>
-        </div>
-      </form>
-      <img id="oldImg" src="https://dummyimage.com/300x300/f7f2f7/a2a3ab/&text=Upload image" alt="image-placehoder" class="img-thumbnail" data-target="image-preview">
+          <!-- 導覽列 -->
+          <div class="dropdown">
+            <button id='tools' class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Tools
+            </button>
+            <div style="background-color: rgb(168, 235, 250);" class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+              <button class="dropdown-item" id="crop_img" >
+                <i class="fa fa-scissors" ></i> Crop image</button>
+              <button class="dropdown-item" id="transform">
+                <i class="fa fa-undo"></i> Transform</button>
+              <button class="dropdown-item" id='takephoto' data-toggle="modal" data-target="#camera-modal">
+                <i class="fa fa-camera"></i> Take photo</button>
+            </div>
+          </div>  
+        </div>    
+      <!-- </form> -->
+      <img id="oldImg" src="https://dummyimage.com/3s00x300/f7f2f7/a2a3ab/&text=Upload image" alt="image-placehoder" class="img-thumbnail" data-target="image-preview">
     </div> 
+    <!-- 箭頭icon -->
+    <div class="arrow">
+      Transform
+      <br>
+    <svg width="100" height="100" viewBox="0 0 512 512" aria-hidden="true" focusable="false" role="img" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M240,352l0,94.201c0,12.134 7.309,23.073 18.52,27.716c11.21,4.644 24.113,2.077 32.693,-6.503c45.522,-45.522 143.645,-143.644 183.13,-183.13c15.621,-15.621 15.621,-40.947 0,-56.568l-183.13,-183.13c-8.58,-8.58 -21.483,-11.147 -32.693,-6.503c-11.211,4.643 -18.52,15.582 -18.52,27.716l0,94.201l-164.036,-0c-7.417,-0 -14.529,2.946 -19.774,8.19c-5.244,5.245 -8.19,12.357 -8.19,19.774c0,29.673 0,106.399 0,136.072c-0,7.417 2.946,14.529 8.19,19.774c5.245,5.244 12.357,8.19 19.774,8.19l164.036,-0Zm223.029,-112.971c9.373,9.373 9.373,24.569 0,33.942c-39.485,39.485 -137.607,137.607 -183.13,183.13c-4.003,4.003 -10.025,5.201 -15.257,3.034c-5.231,-2.167 -8.642,-7.272 -8.642,-12.934c0,-42.564 0,-110.201 0,-110.201l-180.036,0c-3.173,0 -6.216,-1.26 -8.46,-3.504c-2.244,-2.244 -3.504,-5.287 -3.504,-8.46l0,-136.072c-0,-3.173 1.26,-6.216 3.504,-8.46c2.244,-2.244 5.287,-3.504 8.46,-3.504l180.036,0l0,-110.201c0,-5.662 3.411,-10.767 8.642,-12.934c5.232,-2.167 11.254,-0.969 15.257,3.034c45.523,45.523 143.645,143.645 183.13,183.13Z"/></svg>
+    </div>
 
-    <div class="col">
-            <div class="input-group mb-3">
-                <button  class="btn btn-info" id='download'><i class="fa fa-arrow-circle-down"></i> Save image</button>
-                <button  class="btn btn-info" id='reset'><i class="fa fa-repeat"></i> Reset</button>     
-            </div>    
+    <div class="col" id="col2">
+            <div class="input-group">
+                <label class="btn btn-info" id='download'>
+                  <i class="fa fa-arrow-circle-down"></i> Save image</label>
+                <label class="btn btn-info" id='reset'>
+                  <i class="fa fa-repeat"></i> Reset</label>     
+            </div>  
+            <br>  
+            <br>
           <!-- <img id="newImg" src="data:image/jpg;base64,{{img_b64}}" alt=""> -->
           <img id="newImg" src="https://dummyimage.com/300x300/f7f2f7/a2a3ab/&text=transform image" ></img>   
     </div>
-</div>
+  </div>   
 
-
-<div class="container">
-      <!-- 導覽列 -->
-      <div class="dropdown">
-        <button id='tools' class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Tools
-        </button>
-        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-          <button class="dropdown-item" id="crop_img" >
-            <i class="fa fa-scissors" ></i> Crop image</button>
-          <button class="dropdown-item" id="transform">
-            <i class="fa fa-undo"></i> Transform</button>
-          <button class="dropdown-item" id='takephoto' data-toggle="modal" data-target="#camera-modal">
-            <i class="fa fa-camera"></i> Take photo</button>
-        </div>
-      </div>
-
-
+    <div class="container">
       <div class="modal fade" id="camera-modal" tabindex="-1" role="dialog" aria-labelledby="camera-modal-label" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
           <div class="modal-content">
@@ -140,7 +149,7 @@
               <div id="camera-window">
                 <button id='camera' class="btn btn-primary" >Camera</button>
                 <button id='screenshot' class="btn btn-primary">Screenshot</button>
-                <button id='stop' class="btn btn-secondary" >Stop</button>
+                <!-- <button id='stop' class="btn btn-secondary" >Stop</button> -->
                 <button id='cancel' class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                 <button id='select' class="btn btn-secondary" data-dismiss="modal">Select</button>
                   <div id="screenshot-container">
@@ -153,7 +162,6 @@
         </div>
       </div>
     </div>
-  </div>    
          <div id='image2painting'></div>
   </div>  
   <script src="../static/crop.js"></script>

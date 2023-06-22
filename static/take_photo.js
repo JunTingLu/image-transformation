@@ -3,7 +3,7 @@
         const camera =document.querySelector('#camera')
         const open =document.querySelector('#open')
         const video =document.querySelector('#video')
-        const Stop =document.querySelector('#stop')
+        // const Stop =document.querySelector('#stop')
         const selected =document.querySelector('#select')
         const to_oldimg=document.querySelector('#oldImg')
         const constraints = { audio: true, video: { width:400, height:400 }}
@@ -46,18 +46,27 @@
             const new_oldimg=document.createElement('div')
             new_oldimg.width=width
             new_oldimg.height=height
-        })
-
-        // stop screen 
-        Stop.addEventListener('click',()=>{
-                if (cameraStream){
+            if (cameraStream){
+                console.log(50)
                 //  getTracks取得所有軌道(track)，返回MediaStreamTrack物件陣列，每個物件包含該軌道的相關資訊(（頻或視頻、ID、狀態)
                     cameraStream.getTracks().forEach(track=>{
                     track.stop()
                     })
                     cameraStream=null
                 }
-                })
+        })
+
+        // stop screen 
+        // Stop.addEventListener('click',()=>{
+        //         if (cameraStream){
+        //         //  getTracks取得所有軌道(track)，返回MediaStreamTrack物件陣列，每個物件包含該軌道的相關資訊(（頻或視頻、ID、狀態)
+        //             cameraStream.getTracks().forEach(track=>{
+        //             track.stop()
+        //             })
+        //             cameraStream=null
+        //         }
+        //         })
+
         // show screenshot
         Screenshot.addEventListener('click', () => {
                 // 獲取canvas的寬度和高度
