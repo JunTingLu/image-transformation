@@ -5,30 +5,30 @@
     display: inline-block;
   }
 
-  h1{
-    color:#0f17f1;
-  }
-  body{
-    background-color: rgb(107, 102, 102);
-  }
+h1{
+  color:#0f17f1;
+}
+body{
+  background-color: rgb(107, 102, 102);
+}
 
-  #webtitle{
-    text-align: center;
-    width:100%;
-  }
+#webtitle{
+  text-align: center;
+  width:100%;
+}
 
-  #content{
-    color: #ddd;
-  }
-  
-  #reset{
-    margin-left: 10px;
+#content{
+  color: #ddd;
+}
 
-  }
+#reset{
+  margin-left: 10px;
 
-  #submitbtn{
-    margin-left: 10px;
-  }
+}
+
+#submitbtn{
+  margin-left: 10px;
+}
 
 /* function button */
 #col1{
@@ -63,6 +63,7 @@
   color: #ffffff;
   margin-bottom: 10px;
 }
+
 
 .btn{
   background-color: #950fee;

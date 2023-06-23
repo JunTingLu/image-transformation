@@ -1,5 +1,6 @@
 import os
-from flask import Flask, request, redirect, url_for, render_template,send_from_directory,jsonify
+from flask import Flask
+from flask import request, redirect, url_for, render_template,send_from_directory,jsonify
 # from flask_uploads import UploadSet, IMAGES
 import base64 
 from werkzeug.utils import secure_filename
@@ -10,12 +11,10 @@ from PIL import Image
 import io
 from cv2 import imwrite
 import torch
-# from torch import unsqueeze
-# import torch.nn as nn
-# from main import GeneratorResNet, ResidualBlock
 import pickle
 from configparser import ConfigParser
 from flask_cors import CORS
+import multipart
 
 app = Flask(__name__)
 CORS(app)
@@ -31,15 +30,18 @@ def allowed_file(filename):
   
 # 取得圖片之base64編碼並傳至後端，後端將base64轉換回圖片進行預測
 def proccessing_img(data):
-    # 讀取圖片內容
-    # data = request.files['file'].read()
-    # 將data(bytes) 字串寫入緩衝區，並轉成PIL物件
-    content_type = data.split(b'\r\n')[3].decode('utf-8')
-    print(37,content_type)
-    # 取得Content-Type中的圖片格式
-    img=Image.open(io.BytesIO(data))
-    print(41)
-    # img2arr=np.array(img)
+    # 搜尋圖片內容
+    start_index = data.find(b"data:")
+    if start_index != -1:
+        start_index += len("data:")
+    content= data[start_index:]
+    # 將圖片資料解碼為位元組
+    image_bytes = base64.b64decode(content)
+    print(44,image_bytes)
+    # 二進制處理
+    img=Image.open(io.BytesIO(content))
+    print(46,img)
+    # img2arr=np.array(image_bytes)
     # resized=cv2.resize(img2arr,(256,256))
     # print(39,resized.shape)
     """ 測試將原圖轉成灰階 """
@@ -96,7 +98,7 @@ def load_model(input_img):
 
 
 
-@app.route('/uploaded', methods=['GET', 'POST'])
+@app.route('/img_backend', methods=['GET', 'POST'])
 def upload_data():
     path_list=[]
     # 初始化img_b64為空值
@@ -105,21 +107,22 @@ def upload_data():
     # 接收json 參數類型
     if request.method=='POST': 
         img=request.get_data()
-        # print(103,img)
+        print(103,img)
         # for index in img:
             # if allowed_file(index.filename):
                 # 圖片處理
         img_process=proccessing_img(img)
-        print(110,img_process)
+        # print(110,img_process)
                 # 進行圖像轉換
                 # generated_img=load_model(img_process)
                 # print(generated_img.shape)
                 # 將圖片返回前端模板
-        img_b64=show_img(img_process)
+        # img_b64=show_img(img_process)
                 # print(img_b64)         
                 # index.save(os.path.join(app.config['UPLOAD_FOLDER'],secure_filename(index.filename)))    
     # return render_template('img_upload.html',img_b64=img_b64)
-        return jsonify({'data':{'result':img_b64,'type':'image'}})
+        # return jsonify({'data':{'result':img_b64,'type':'image'}})
+        return 'end'
 
 
 if __name__ == '__main__':

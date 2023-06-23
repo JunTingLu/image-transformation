@@ -1,7 +1,6 @@
 var $uploadCrop,
-    tempFilename,
     rawImg,
-    imageId;
+    data;
 
     function readFile(input) {
         if (input.files && input.files[0]) {
@@ -43,20 +42,35 @@ var $uploadCrop,
         readFile(this);
     });
 
+    // 跳出剪裁框
     $('#crop_img').on('click', function () { 
         $('#cropImagePop').modal('show');
     });
     
     // 剪裁後貼至upload image 中
     $('#cropImageBtn').on('click', function (ev) {
-        console.log(48)
         $uploadCrop.croppie('result', {
             type: 'base64',
             format: 'jpeg',
             size: {width:  256, height: 256}
-        }).then(function (resp) {
-            $('#oldImg').attr('src', resp);
+        }).then(function (resize) {
+            $('#oldImg').attr('src', resize);
+            console.log(58,oldImg)
             $('#cropImagePop').modal('hide');
         });
     });
 
+    $('#submitbtn').on('click', function (ev) {
+        var img_url =oldImg.src;
+        data=new FormData()
+        data.append('file',img_url)
+        console.log(67,data)
+        fetch('http://127.0.0.1:5000/img_backend',{
+            method:'POST',
+            body:data
+        })
+        .then(({data})=>{ 
+            console.log('sucess')
+            // var newimg=data.result;     
+        })
+    })
