@@ -62,6 +62,7 @@ var $uploadCrop,
 
     $('#submitbtn').on('click', function (ev) {
         var img_url =oldImg.src;
+        console.log(65,img_url)
         data=new FormData()
         data.append('file',img_url)
         console.log(67,data)

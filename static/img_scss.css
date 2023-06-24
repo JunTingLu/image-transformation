@@ -1,5 +1,6 @@
 @import url("https://fonts.googleapis.com/css?family=Cardo:400i|Rubik:400,700&display=swap");
 :root {
+  /* 建立變數 */
   --d: 700ms;
   --e: cubic-bezier(0.19, 1, 0.22, 1);
   --font-sans: "Rubik", sans-serif;
@@ -11,77 +12,74 @@
           box-sizing: border-box;
 }
 
-html, body {
-  height: 100%;
-}
-
 body {
+  height: 150%;
+  background-color: rgb(107, 102, 102);
+  place-items: center;
   display: -ms-grid;
   display: grid;
-  place-items: center;
 }
 
 .page-content {
   display: -ms-grid;
   display: grid;
   grid-gap: 1rem;
+  /* 內邊間距 */
   padding: 1rem;
-  max-width: 1024px;
+  max-width: 1500px;
+  /* 外邊距為上下都為 0，左右自動調整（居中對齊） */
   margin: 0 auto;
   font-family: var(--font-sans);
 }
+
 @media (min-width: 600px) {
   .page-content {
     -ms-grid-columns: 1fr 1rem 1fr;
     grid-template-columns: repeat(2, 1fr);
   }
+  .card {
+    height: 450px;
+  }
 }
-@media (min-width: 800px) {
+
+/* @media (min-width: 800px) {
   .page-content {
     -ms-grid-columns: 1fr 1rem 1fr 1rem 1fr 1rem 1fr;
     grid-template-columns: repeat(4, 1fr);
   }
-}
+} */
 
 .card {
-  position: relative;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: end;
-      -ms-flex-align: end;
-          align-items: flex-end;
-  overflow: hidden;
-  padding: 1rem;
-  width: 100%;
-  text-align: center;
-  color: rgb(71, 67, 67);
-  background-color: rgb(175, 183, 185);
-  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1), 0 2px 2px rgba(0, 0, 0, 0.1), 0 4px 4px rgba(0, 0, 0, 0.1), 0 8px 8px rgba(0, 0, 0, 0.1), 0 16px 16px rgba(0, 0, 0, 0.1);
-          box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1), 0 2px 2px rgba(0, 0, 0, 0.1), 0 4px 4px rgba(0, 0, 0, 0.1), 0 8px 8px rgba(0, 0, 0, 0.1), 0 16px 16px rgba(0, 0, 0, 0.1);
-}
-@media (min-width: 600px) {
-  .card {
-    height: 350px;
-  }
+position: relative;
+display: -ms-flexbox;
+display: flex;
+-ms-flex-align: end;
+align-items: flex-end;
+overflow: hidden;
+padding: 1rem;
+width: 100%;
+text-align: center;
+background-color: rgb(175, 183, 185);
+box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1), 0 2px 2px rgba(0, 0, 0, 0.1), 0 4px 4px rgba(0, 0, 0, 0.1), 0 8px 8px rgba(0, 0, 0, 0.1), 0 16px 16px rgba(0, 0, 0, 0.1);
 }
 
+/* card movement */
 .card:before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 110%;
-  background-size: cover;
-  background-position: 0 0;
-  -webkit-transition: -webkit-transform calc(var(--d) * 1.5) var(--e);
-  transition: -webkit-transform calc(var(--d) * 1.5) var(--e);
-  transition: transform calc(var(--d) * 1.5) var(--e);
-  transition: transform calc(var(--d) * 1.5) var(--e), -webkit-transform calc(var(--d) * 1.5) var(--e);
-  pointer-events: none;
+content: "";
+position: absolute;
+top: 0;
+left: 0;
+width: 100%;
+height: 110%;
+/* 設定偽元素的背景大小 */
+background-size: cover;
+/* background-position: 0 0; */
+transition: transform calc(var(--d) * 1.5) var(--e), -webkit-transform calc(var(--d) * 1.5) var(--e);
+/* 將不會觸發任何與鼠標相關的事件，包括滑鼠點擊、滑鼠移動、滑鼠滾輪 */
+/* pointer-events: none; */
 }
-.card:after {
+
+/* .card:after {
   content: "";
   display: block;
   position: absolute;
@@ -97,7 +95,8 @@ body {
   transition: -webkit-transform calc(var(--d) * 2) var(--e);
   transition: transform calc(var(--d) * 2) var(--e);
   transition: transform calc(var(--d) * 2) var(--e), -webkit-transform calc(var(--d) * 2) var(--e);
-}
+} */
+
 .card:nth-child(1):before {
   background-image: url(https://www.vincentvangogh.org/images/self-portrait.jpg);
 }
@@ -113,26 +112,22 @@ body {
 
 
 .content {
-  position: relative;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  width: 100%;
-  padding: 1rem;
-  -webkit-transition: -webkit-transform var(--d) var(--e);
-  transition: -webkit-transform var(--d) var(--e);
-  transition: transform var(--d) var(--e);
-  transition: transform var(--d) var(--e), -webkit-transform var(--d) var(--e);
-  z-index: 1;
-  color:aliceblue;
+position: relative;
+display: -ms-flexbox;
+display: flex;
+-ms-flex-direction: column;
+flex-direction: column;
+-ms-flex-align: center;
+align-items: center;
+width: 100%;
+padding: 1rem;
+transition: -webkit-transform var(--d) var(--e);
+transition: transform var(--d) var(--e);
+transition: transform var(--d) var(--e), -webkit-transform var(--d) var(--e);
+z-index: 1;
+color:aliceblue;
 }
+/*  */
 .content > * + * {
   margin-top: 1rem;
 }
@@ -160,61 +155,42 @@ body {
             transform: translateY(0);
   }
   .content {
-    -webkit-transform: translateY(calc(100% - 4.5rem));
-            transform: translateY(calc(100% - 4.5rem));
+    transform: translateY(calc(100% - 4.5rem));
   }
+  /* 鼠標點選時顯現圖卡字樣 */
   .content > *:not(.title) {
     opacity: 0;
-    -webkit-transform: translateY(1rem);
-            transform: translateY(1rem);
-    -webkit-transition: opacity var(--d) var(--e), -webkit-transform var(--d) var(--e);
-    transition: opacity var(--d) var(--e), -webkit-transform var(--d) var(--e);
+    transform: translateY(1rem);
+    transition: opacity var(--d) var(--e);
     transition: transform var(--d) var(--e), opacity var(--d) var(--e);
-    transition: transform var(--d) var(--e), opacity var(--d) var(--e), -webkit-transform var(--d) var(--e);
+    transition: transform var(--d) var(--e), opacity var(--d) var(--e);
   }
   .card:hover,
 .card:focus-within {
-    -webkit-box-align: center;
-        -ms-flex-align: center;
-            align-items: center;
+      -ms-flex-align: center;
+      align-items: center;
   }
   .card:hover:before,
 .card:focus-within:before {
-    -webkit-transform: translateY(-4%);
-            transform: translateY(-4%);
+    transform: translateY(-4%);
   }
   .card:hover:after,
 .card:focus-within:after {
-    -webkit-transform: translateY(-50%);
-            transform: translateY(-50%);
+    transform: translateY(-50%);   
   }
   .card:hover .content,
 .card:focus-within .content {
-    -webkit-transform: translateY(0);
-            transform: translateY(0);
+    transform: translateY(0);
   }
-  .card:hover .content > *:not(.title),
-.card:focus-within .content > *:not(.title) {
+
+  /* 鼠標抽離時時回到只有圖卡標題狀態 */
+.card:hover .content > *:not(.title) {
     opacity: 1;
-    -webkit-transform: translateY(0);
-            transform: translateY(0);
-    -webkit-transition-delay: calc(var(--d) / 8);
-            transition-delay: calc(var(--d) / 8);
-  }
-  .card:focus-within:before, .card:focus-within:after,
-.card:focus-within .content,
-.card:focus-within .content > *:not(.title) {
-    -webkit-transition-duration: 0s;
-            transition-duration: 0s;
+    /* transform: translateY(0); */
+    transition-delay: calc(var(--d) / 8);
   }
 }
 
-/* take photo css */
-/* #take-photo{
-  position:absolute;
-  top:0;
-  left:0;
-} */
 #camera-window {
   position: absolute;
   top: 50%;

@@ -35,7 +35,6 @@
                     video.style.left = '50%';
                     video.style.top = '50%';
                     video.style.transform = 'translate(-50%, -50%)';
-                    console.log(36,video)
                 }).catch(err=>{
                 alert('open camera fail')
             });
@@ -43,9 +42,9 @@
         
         // select the photo
         selected.addEventListener('click',()=>{
-            const new_oldimg=document.createElement('div')
-            new_oldimg.width=width
-            new_oldimg.height=height
+            var dataURL = canvas.toDataURL('image/jpeg');
+            to_oldimg.src=dataURL
+            
             if (cameraStream){
                 console.log(50)
                 //  getTracks取得所有軌道(track)，返回MediaStreamTrack物件陣列，每個物件包含該軌道的相關資訊(（頻或視頻、ID、狀態)
@@ -55,17 +54,6 @@
                     cameraStream=null
                 }
         })
-
-        // stop screen 
-        // Stop.addEventListener('click',()=>{
-        //         if (cameraStream){
-        //         //  getTracks取得所有軌道(track)，返回MediaStreamTrack物件陣列，每個物件包含該軌道的相關資訊(（頻或視頻、ID、狀態)
-        //             cameraStream.getTracks().forEach(track=>{
-        //             track.stop()
-        //             })
-        //             cameraStream=null
-        //         }
-        //         })
 
         // show screenshot
         Screenshot.addEventListener('click', () => {

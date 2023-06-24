@@ -15,50 +15,50 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css"></link>
   </head>
   <style>
-    @import url(../static/img_uploader.css);
+    @import url(../static/webdemo.css);
     @import url('https://fonts.googleapis.com/css?family=Cardo:400i|Rubik:400,700&display=swap');
     @import url(../static/img_scss.css);
- </style>
+  </style>
 <body>
   <div id='webtitle' class="jumbotron bgtext-white" style="background-color: #333337;"> 
     <h1 style="color:#82e9e9 ;font-size: 60px;">Image-to-Painting Demo</h1>  
-   </div> 
+  </div> 
   <div class="container fluid">
     <div class="col-20  mx-auto">
     <td><h4 style="text-align: center;color:azure">I leverage the principle of cyclegan to implement a style converter that can select cro</h4></td>
     <br>
-    <main id="page-content" class="page-content">
-      <div class="card">
-        <div class="content">
-          <h2 class="title">Mountain View</h2>
-          <p class="copy">Check out all of these gorgeous mountain trips with beautiful vi</p>
-          <button class="card-btn">View Trips</button>
+      <main id="page-content" class="page-content">
+        <div class="card">
+          <div class="content">
+            <h2 class="title">Vango style</h2>
+            <p class="copy">Check out all of these gorgeous mountain trips with beautiful vi</p>
+            <button class="card-btn">choose</button>
+          </div>
         </div>
-      </div>
-      <div class="card">
-        <div class="content">
-          <h2 class="title">To The Beach</h2>
-          <p class="copy">Plan your next beach trip with these fabulous destinations</p>
-          <button class="card-btn" id="card-btn">View Trips</button>
+        <div class="card">
+          <div class="content">
+            <h2 class="title">Monet style</h2>
+            <p class="copy">Plan your next beach trip with these fabulous destinations</p>
+            <button class="card-btn" id="card-btn">choose</button>
+          </div>
         </div>
-      </div>
-      <div class="card">
-        <div class="content">
-          <h2 class="title">Desert Destinations</h2>
-          <p class="copy">It's the desert you've always dreamed of</p>
-          <button class="card-btn" id="card-btn">Book Now</button>
+        <div class="card">
+          <div class="content">
+            <h2 class="title">ukiyoe style</h2>
+            <p class="copy">It's the desert you've always dreamed of</p>
+            <button class="card-btn" id="card-btn">choose</button>
+          </div>
         </div>
-      </div>
-      <div class="card">
-        <div class="content">
-          <h2 class="title">Explore The Galaxy</h2>
-          <p class="copy">Seriously, straight up, just blast off into outer space today</p>
-          <button class="card-btn" id="card-btn">Book Now</button>
+        <div class="card">
+          <div class="content">
+            <h2 class="title">cezanne style</h2>
+            <p class="copy">Seriously, straight up, just blast off into outer space today</p>
+            <button class="card-btn" id="card-btn">choose</button>
+          </div>
         </div>
-      </div>
-    </main>  
-  </div>
-</div> 
+      </main>  
+    </div>
+  </div> 
   <br>
 
       <div class="row">
@@ -82,8 +82,8 @@
                 </div>
               </div>
           </div>
+        </div>
       </div>
-  </div>
 
   <div class="row"> 
     <div class="col" id="col1">
@@ -131,7 +131,7 @@
             <br>  
             <br>
           <!-- <img id="newImg" src="data:image/jpg;base64,{{img_b64}}" alt=""> -->
-          <img id="newImg" src="https://dummyimage.com/300x300/f7f2f7/a2a3ab/&text=transform image" ></img>   
+          <img id="newImg" style="background-color: rgb(182, 254, 251);"src="https://dummyimage.com/300x300/f7f2f7/a2a3ab/&text=transform image" alt="image-placehoder" class="img-thumbnail" data-target="image-preview"></img>   
     </div>
   </div>   
 
@@ -161,11 +161,10 @@
           </div>
         </div>
       </div>
-    </div>
+    </div>  
          <div id='image2painting'></div>
-  </div>  
   <script src="../static/crop.js"></script>
-<!-- <script src="../static/img_uploader.js"></script> -->
+  <script src="../static/img_uploader.js"></script>
   <script src="../static/take_photo.js"></script>
 </body>
 </html>

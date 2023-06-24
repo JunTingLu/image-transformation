@@ -19,7 +19,7 @@ import multipart
 app = Flask(__name__)
 CORS(app)
 
-app.config['UPLOAD_FOLDER'] ='C:/Users/User/Desktop/python_jupyter/for_job/static/files/'  # 文件储存地址
+app.config['UPLOAD_FOLDER'] ='../static/files/'  # 文件储存地址
 app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024 # 限制大小 24MB
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
@@ -29,24 +29,26 @@ def allowed_file(filename):
 
   
 # 取得圖片之base64編碼並傳至後端，後端將base64轉換回圖片進行預測
-def proccessing_img(data):
-    # 搜尋圖片內容
-    start_index = data.find(b"data:")
+def preprocess_img(data):
+    # 搜尋圖片內容 (移除標頭)
+    start_index = data.find(b"data:image/png;base64")
     if start_index != -1:
-        start_index += len("data:")
+        start_index += len("data:image/png;base64")
+    # utf-8 生成二進制 
     content= data[start_index:]
-    # 將圖片資料解碼為位元組
+    print(39,content)
+    # 對二進制進行編碼，生成base64字符串
     image_bytes = base64.b64decode(content)
     print(44,image_bytes)
     # 二進制處理
-    img=Image.open(io.BytesIO(content))
+    img=Image.open(io.BytesIO(image_bytes))
     print(46,img)
-    # img2arr=np.array(image_bytes)
-    # resized=cv2.resize(img2arr,(256,256))
-    # print(39,resized.shape)
+    img2arr=np.array(img)
+    resizedimg=cv2.resize(img2arr,(256,256))
+    print(39,resizedimg.shape)
     """ 測試將原圖轉成灰階 """
     # gray_img=img.convert('L')
-    return 'resized'
+    return resizedimg
 
 
 def show_img(input_img):
@@ -93,8 +95,9 @@ def load_model(input_img):
     # 丟入generator中預測
     generator.eval()
     generator_img=generator(img_tensor)
-
+    print(97,generator_img)
     return 'success!'
+    # return jsonify({'data':{'result':generator_img,'type':'image'}})
 
 
 
@@ -107,11 +110,10 @@ def upload_data():
     # 接收json 參數類型
     if request.method=='POST': 
         img=request.get_data()
-        print(103,img)
         # for index in img:
             # if allowed_file(index.filename):
                 # 圖片處理
-        img_process=proccessing_img(img)
+        img_process=preprocess_img(img)
         # print(110,img_process)
                 # 進行圖像轉換
                 # generated_img=load_model(img_process)

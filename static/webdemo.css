@@ -8,9 +8,7 @@
 h1{
   color:#0f17f1;
 }
-body{
-  background-color: rgb(107, 102, 102);
-}
+
 
 #webtitle{
   text-align: center;
@@ -35,12 +33,27 @@ body{
   background-color: #b9b2b2;
   position: relative;
   right: 10%;
+  height:500px;
+  width:400px;
+  text-align: center;
 }
 
 #col2{
   background-color: #b9b2b2;
   position: relative;
   left: 10%;
+  height:500px;
+  width:400px;
+  text-align: center;
+}
+
+.dropdown{
+  text-align: initial;
+}
+
+#upload{
+  text-align: initial;
+  margin-left: 40px;
 }
 
 .arrow{
@@ -51,15 +64,19 @@ body{
 }
 
 #crop_img:hover{
- background-color: #63eaf4;
+ background-color: cyan;
 }
 
 #transform:hover{
-  background-color: #63eaf4;
+  background-color: cyan;
+}
+
+#takephoto:hover{
+  background-color: cyan;
 }
 
 #tools{
-  background-color: #29d6c5;
+  background-color: #2948d6;
   color: #ffffff;
   margin-bottom: 10px;
 }
@@ -67,6 +84,11 @@ body{
 
 .btn{
   background-color: #950fee;
+  margin-top: 15px;
+}
+
+.btn-info{
+  border-color: #950fee;
 }
 /* control btn */
 .btn:hover {
@@ -86,14 +108,14 @@ body{
   font-weight: bold;
   letter-spacing: 0.025rem;
   text-transform: uppercase;
-  color: rgb(179, 170, 170);
-  background-color: #06c9b6;
+  color:#ffff;
+  background-color: #515152;
   border: none;
   border-radius: 5px;
 }
 
 .card-btn:hover {
-  background-color: #63eaf4;
+  background-color: #eaf463;
 }
 .card-btn:focus {
   outline: 1px dashed rgb(211, 83, 236);

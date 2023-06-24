@@ -1,4 +1,3 @@
-
 // 預覽圖片
     const myFile = document.querySelector('#upload-file')
     const submit=document.querySelector('#submitbtn')
@@ -16,37 +15,35 @@
 //     });
 // }   
 
-function submited(){
-    submit.addEventListener('click',()=>{
-        const Data=new FormData()
-        Data.append('input',selectedFile)
-    fetch('http://127.0.0.1:5000/uploaded',{
-            method:'POST',
-            body: Data,
-            headers:{
-                'Content-Type':'multipart/form-data'
-            }  
-    })
-    .then(response=>response.json()) // 將回傳文字轉成json格式
-    //解構 data
-    .then(({data})=>{ 
-        console.log(27,data.result)
-        // 判斷回傳是否為圖片url
-        if (data.type==='image'){
-            img_display.src=data.result;
-            return 
-        }        
-    }).catch(error,()=>{
-        console.log(error)
-    })
-});
-}
-
-// function  upload_file(){
-//     submited();
+// function submited(){
+//     submit.addEventListener('click',()=>{
+//         const Data=new FormData()
+//         Data.append('input',selectedFile)
+//     fetch('http://127.0.0.1:5000/uploaded',{
+//             method:'POST',
+//             body: Data,
+//             headers:{
+//                 'Content-Type':'multipart/form-data'
+//             }  
+//     })
+//     .then(response=>response.json()) // 將回傳文字轉成json格式
+//     //解構 data
+//     .then(({data})=>{ 
+//         console.log(27,data.result)
+//         // 判斷回傳是否為圖片url
+//         if (data.type==='image'){
+//             img_display.src=data.result;
+//             return 
+//         }        
+//     }).catch(error,()=>{
+//         console.log(error)
+//     })
+// });
 // }
-upload_file();
-submited();
+
+
+// upload_file();
+// submited();
 
 // 下載轉換後的圖片(Blob URL)
     // create 'a' label
