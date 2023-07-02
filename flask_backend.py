@@ -110,11 +110,9 @@ def upload_data():
     # 接收json 參數類型
     if request.method=='POST': 
         img=request.get_data()
-        # for index in img:
-            # if allowed_file(index.filename):
-                # 圖片處理
+        # 圖像處理
         img_process=preprocess_img(img)
-        # print(110,img_process)
+        print(117,img_process)
                 # 進行圖像轉換
                 # generated_img=load_model(img_process)
                 # print(generated_img.shape)

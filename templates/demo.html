@@ -140,23 +140,25 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="camera-modal-label">Take photo</h5>
+              <h4 class="modal-title" id="camera-modal-label">Take photo</h4>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
+              <span aria-hidden="true">&times;</span>
               </button>
             </div>
             <div class="modal-body">
               <div id="camera-window">
-                <button id='camera' class="btn btn-primary" >Camera</button>
-                <button id='screenshot' class="btn btn-primary">Screenshot</button>
-                <!-- <button id='stop' class="btn btn-secondary" >Stop</button> -->
-                <button id='cancel' class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button id='select' class="btn btn-secondary" data-dismiss="modal">Select</button>
                   <div id="screenshot-container">
                     <video id='video'></video>
                   </div>
               </div>
               <canvas id='canvas'></canvas>
+            </div>
+            <div class="modal-footer">
+              <button id='camera' class="btn btn" >Camera</button>
+              <button id='screenshot' class="btn btn">Screenshot</button>
+              <button id='cancel' class="btn btn" data-dismiss="modal">Cancel</button>
+              <button id='select' class="btn btn" data-dismiss="modal">Select</button>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             </div>
           </div>
         </div>

@@ -6,7 +6,8 @@
         // const Stop =document.querySelector('#stop')
         const selected =document.querySelector('#select')
         const to_oldimg=document.querySelector('#oldImg')
-        const constraints = { audio: true, video: { width:400, height:400 }}
+        // video.style.cssText="width:400px;height:400px;";
+        const constraints = { audio: true, video:{width:400,height:400}}
         // 擷取照片傳至canvas中
         const canvas = document.querySelector('#canvas');
         const context = canvas.getContext('2d');
@@ -40,6 +41,11 @@
             });
          });
         
+
+        //  重起相機時更新畫面
+
+
+
         // select the photo
         selected.addEventListener('click',()=>{
             var dataURL = canvas.toDataURL('image/jpeg');
@@ -73,5 +79,9 @@
 
         cancel.addEventListener('click',()=>{
             video.src=""
+            cameraStream.getTracks().forEach(track=>{
+                track.stop()
+                })
+                cameraStream=null
         })
     });
