@@ -1,8 +1,8 @@
 // 預覽圖片
-    const myFile = document.querySelector('#upload-file')
-    const submit=document.querySelector('#submitbtn')
-    const img = document.querySelector('#oldImg')
-    const img_display=document.querySelector('#newImg')
+const myFile = document.querySelector('#upload-file')
+const submit=document.querySelector('#submitbtn')
+const img = document.querySelector('#oldImg')
+const img_display=document.querySelector('#newImg')
     // let selectedFile;
 
 // function upload_file(){
@@ -42,33 +42,55 @@
 // }
 
 
-// upload_file();
-// submited();
+// image transform btn event
+const trsbtn=document.querySelector('#transform')
+const vango_string=document.querySelector('#vango')
+const monet_string=document.querySelector('#monet')
+
+// save the string in feature when the chose-btn is clicked
+features=[]
+vango_string.addEventListener('click',()=>{
+    const keystring=vango_string.id
+    features.append()
+    // 只保留feature當前選擇的字串
+
+})
+
+// deliver the string with different painting types
+key=['vango','monet'];
+trsbtn.addEventListener('click',()=>{
+    data=FormData();
+    data.append(key)
+    fetch('127.0.0.1.5000/img_backend',{
+        data:data,
+    })
+})
+
+
 
 // 下載轉換後的圖片(Blob URL)
-    // create 'a' label
-    const download_file = document.querySelector('#download')
-    // const new_img=document.querySelector('#newImg')
-    // 若oldimg為空才能下載圖片，確保下載到上傳的預覽圖片
+// create 'a' label
+const download_file = document.querySelector('#download')
+// const new_img=document.querySelector('#newImg')
+// 若oldimg為空才能下載圖片，確保下載到上傳的預覽圖片
+download_file.addEventListener('click', function(e){
+const downloadLink = document.createElement('a')
+// 將 a 標籤的連結改為 Blob URL
+downloadLink.href = URL.createObjectURL(file)
+// 將下載的檔名設定為 file
+downloadLink.download = 'download-image'
+// 點擊標籤
+downloadLink.click()
+});
 
-
-    download_file.addEventListener('click', function(e){
-    const downloadLink = document.createElement('a')
-    // 將 a 標籤的連結改為 Blob URL
-    downloadLink.href = URL.createObjectURL(file)
-    // 將下載的檔名設定為 file
-    downloadLink.download = 'download-image'
-    // 點擊標籤
-    downloadLink.click()
-    });
 
 // 清除圖片
-    const renew_img=document.querySelector('#newImg')
-    const resetbtn=document.querySelector('#reset')
-    resetbtn.addEventListener('click',function(e){
-        if (newImg.src!=''){
-            renew_img.src="";
-        }
-    });
+const renew_img=document.querySelector('#newImg')
+const resetbtn=document.querySelector('#reset')
+resetbtn.addEventListener('click',function(e){
+    if (newImg.src!=''){
+        renew_img.src="";
+    }
+});
 
 

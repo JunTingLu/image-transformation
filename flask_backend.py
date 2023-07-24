@@ -11,7 +11,8 @@ from PIL import Image
 import io
 from cv2 import imwrite
 import torch
-import pickle
+import torch.nn as nn
+import torchvision.models as models
 from configparser import ConfigParser
 from flask_cors import CORS
 import multipart
@@ -22,6 +23,12 @@ CORS(app)
 app.config['UPLOAD_FOLDER'] ='../static/files/'  # 文件储存地址
 app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024 # 限制大小 24MB
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
+
+@app.route('/', methods=['GET'])
+def health_check():
+    return 'success!'
+
 
 #檢查上傳檔案是否合法的函數
 def allowed_file(filename):
@@ -36,13 +43,12 @@ def preprocess_img(data):
         start_index += len("data:image/png;base64")
     # utf-8 生成二進制 
     content= data[start_index:]
-    print(39,content)
+
     # 對二進制進行編碼，生成base64字符串
     image_bytes = base64.b64decode(content)
     print(44,image_bytes)
     # 二進制處理
     img=Image.open(io.BytesIO(image_bytes))
-    print(46,img)
     img2arr=np.array(img)
     resizedimg=cv2.resize(img2arr,(256,256))
     print(39,resizedimg.shape)
@@ -70,33 +76,60 @@ def show_img(input_img):
 
 
 """ load the model """
+class VGG(nn.Module):
+    def __init__(self):
+        super(VGG,self).__init__()
+        self.req_features= ['0','5','10','19','28'] 
+        self.model=models.vgg19(pretrained=True).features[:29]
+    def forward(self,x):
+        features=[]
+        #Iterate over all the layers of the mode
+        for layer_num,layer in enumerate(self.model):
+            #activation of the layer will stored in x
+            x=layer(x)
+            #appending the activation of the selected layers and return the feature array
+            if (str(layer_num) in self.req_features):
+                features.append(x)
+                
+        return features  
+
+
+def image_loader(input_img):
+    image=Image.open(input_img)
+    #defining the image transformation steps to be performed before feeding them to the model
+    loader=transforms.Compose([transforms.Resize((512,512)),transforms.ToTensor()])
+    #The preprocessing steps involves resizing the image and then converting it to a tensor
+    image=loader(image).unsqueeze(0)
+    #Creating the generated image from the original image
+    generated_image=image.clone().requires_grad_(True)
+    return image.to(torch.float)
+
+
 def load_model(input_img):
     print(input_img.shape)
-    # 引入模型
-    # model=cycleGAN_model()
-    # 模型加載至cpu上
-    model_state=torch.load('./cycleGAN_demo/static/pth-filesG_BA.pth',map_location=torch.device('cpu'))
-    # 模型保存為pickle 文件
-    with open('model.pickle','wb') as f:
-        pickle.dump(model_state,f)
-    # 導入權重 load pickle 
-    with open('model.pickle','rb') as f:
-        generator=pickle.load(f)
+    # model=VGG().eval() 
+    # 導入權重 load pth
+    with open('CNN_model.pth','rb') as f:
+        DL_model=torch.load(f)
+    # model.load_state_dict(torch.load('CNN_model.pth'))    
+    print(103,DL_model)
+    input=torch.tensor(input_img)
+    print(117,input.shape)
+    output=DL_model(input)
+    print(117,output)
+    # 模型保存為pth 文件
     # preprocessing input img
-    transform = transforms.Compose([
-    # 將PIL Image轉換為Tensor，並除255使數值界於0~1之間
-    transforms.ToTensor(),
-    # 標準化將圖片RGB縮放到-1到1之間 (0.5,0.5,0.5) 為均值;(0.5,0.5,0.5)為標準差
-    # 產生均值為0標準差為1的分布
-    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
-])
-    img_tensor=transform(input_img)
+    # img_tensor=image_loader(input_img)
 
-    # 丟入generator中預測
-    generator.eval()
-    generator_img=generator(img_tensor)
-    print(97,generator_img)
-    return 'success!'
+    # string list
+    # key=['vango','monet']
+    # if key in key_string:
+    #     # model evaluation
+    #     DLmodel.eval()
+    #     # model produce
+    #     generator_img=DLmodel(input_img)
+    #     print(97,generator_img)
+    #     return 'success!'
     # return jsonify({'data':{'result':generator_img,'type':'image'}})
 
 
@@ -110,9 +143,18 @@ def upload_data():
     # 接收json 參數類型
     if request.method=='POST': 
         img=request.get_data()
+        print(126,img)
+        # get string 
+        # key_string=request.get_json()
+        # print(149,key_string)
+
         # 圖像處理
         img_process=preprocess_img(img)
         print(117,img_process)
+        final_img=load_model(img_process)
+        print(131, final_img)
+
+    
                 # 進行圖像轉換
                 # generated_img=load_model(img_process)
                 # print(generated_img.shape)
@@ -123,6 +165,11 @@ def upload_data():
     # return render_template('img_upload.html',img_b64=img_b64)
         # return jsonify({'data':{'result':img_b64,'type':'image'}})
         return 'end'
+    
+# 接收前端字串
+def accepter():
+    pass
+
 
 
 if __name__ == '__main__':
