@@ -44,26 +44,59 @@ const img_display=document.querySelector('#newImg')
 
 // image transform btn event
 const trsbtn=document.querySelector('#transform')
-const vango_string=document.querySelector('#vango')
-const monet_string=document.querySelector('#monet')
+// four types of paintings
+const stylebtn=document.querySelector('#card-btn')
 
 // save the string in feature when the chose-btn is clicked
-features=[]
-vango_string.addEventListener('click',()=>{
-    const keystring=vango_string.id
-    features.append()
+style="vango"
+stylebtn.addEventListener('click',(e)=>{
+    console.log(54,e.target)
+    style=e.target.id
     // 只保留feature當前選擇的字串
+    console.log(55,style)
+})
 
+
+$('#submitbtn').on('click', function (ev) {
+    var img_url =oldImg.src;
+    console.log(65,img_url)
+    data=new FormData()
+    data.append('image',img_url)
+    data.append('style',style)
+    console.log(67,data)
+    fetch('http://127.0.0.1:5000/img_backend',{
+        method:'POST',
+        body:data
+    })
+    .then(({data})=>{ 
+        console.log('sucess')
+        // var newimg=data.result;     
+    })
 })
 
 // deliver the string with different painting types
-key=['vango','monet'];
 trsbtn.addEventListener('click',()=>{
-    data=FormData();
-    data.append(key)
-    fetch('127.0.0.1.5000/img_backend',{
-        data:data,
-    })
+    // data=new FormData()
+    // data.append('style',features)
+    // fetch('http://127.0.0.1:5000/img_backend',{
+    //     method:'POST',
+    //     body:data
+    // }).then(({data})=>{
+    //     // 清空features
+    //     features=""
+    //     if (data.result===''){
+    //         return 'error'
+    //     }
+    //     // 延遲顯示圖片
+    //     setTimeout(function(){
+    //         if (data.type==='image'){
+    //             img_display.src=data.image;
+    //             setTimeout(function(){
+    //             },500);
+    //             return
+    //         }
+    //     })
+    // })
 })
 
 

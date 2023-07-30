@@ -10,20 +10,21 @@ from torchvision import transforms
 from PIL import Image
 import io
 from cv2 import imwrite
-import torch
-import torch.nn as nn
-import torchvision.models as models
-from configparser import ConfigParser
+import torch.optim as optim
+from torchvision.utils import save_image
 from flask_cors import CORS
-import multipart
+from utils import *
+from test import VGG
+
 
 app = Flask(__name__)
 CORS(app)
 
-app.config['UPLOAD_FOLDER'] ='../static/files/'  # 文件储存地址
+app.config['UPLOAD_FOLDER'] ='../static/output/'  # 文件储存地址
 app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024 # 限制大小 24MB
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
-
+#Assigning the GPU to the variable device
+device=torch.device("cuda")
 
 @app.route('/', methods=['GET'])
 def health_check():
@@ -63,6 +64,7 @@ def show_img(input_img):
     # gray_img=np.array(input_img)
     # print('shape',gray_img.shape)
     # 測試將gray_img 編成jpeg格式
+
     """ 將轉換照片回傳前端"""
     success,encoded_img=cv2.imencode('.jpg', input_img)
     # 暫存圖片的二進位資料
@@ -75,102 +77,74 @@ def show_img(input_img):
     return  img_b64
 
 
-""" load the model """
-class VGG(nn.Module):
-    def __init__(self):
-        super(VGG,self).__init__()
-        self.req_features= ['0','5','10','19','28'] 
-        self.model=models.vgg19(pretrained=True).features[:29]
-    def forward(self,x):
-        features=[]
-        #Iterate over all the layers of the mode
-        for layer_num,layer in enumerate(self.model):
-            #activation of the layer will stored in x
-            x=layer(x)
-            #appending the activation of the selected layers and return the feature array
-            if (str(layer_num) in self.req_features):
-                features.append(x)
-                
-        return features  
+""" Model evaluation"""
+# model train
+def model_generate(path,epoch,optimizer,origin_img,style_img):
+    model=VGG().to(device).eval() 
+    model.load_state_dict(torch.load(path))
+    model.eval()
+    gen_img=image_loader(origin_img)
+    optimizer=optim.Adam([gen_img],lr=opt.lr)
+    #iterating for 1000 times
+    for e in range (epoch):
+        #extracting the features of generated, content and the original required for calculating the loss
+        gen_features=model(gen_img) 
+        orig_features=model(origin_img)
+        style_features=model(style_img) 
+        #iterating over the activation of each layer and calculate the loss and add it to the content and the style loss
+        total_loss=calculate_loss(gen_features, orig_features, style_features)
+        #optimize the pixel values of the generated image and back-propagate the loss
+        optimizer.zero_grad()
+        total_loss.backward()
+        optimizer.step() # 更新generated_image 參數
+        if (e%150)==0:
+            print(139,gen_img.shape)
+            return  gen_img
 
 
-def image_loader(input_img):
-    image=Image.open(input_img)
+def image_loader(input_img,):
+    # image=Image.open(input_img)
+    # normalization 
+    input_img=input_img/255
+    # transfer np.array to pillow (PIL)
+    pil_image = Image.fromarray(np.uint8(input_img))
     #defining the image transformation steps to be performed before feeding them to the model
     loader=transforms.Compose([transforms.Resize((512,512)),transforms.ToTensor()])
     #The preprocessing steps involves resizing the image and then converting it to a tensor
-    image=loader(image).unsqueeze(0)
-    #Creating the generated image from the original image
+    image=loader(pil_image).unsqueeze(0)
+    # normalized image
+
+
+    #Creating the generated image from the original image (copy origin img as gen_img)
     generated_image=image.clone().requires_grad_(True)
-    return image.to(torch.float)
-
-
-def load_model(input_img):
-    print(input_img.shape)
-    # model=VGG().eval() 
-    # 導入權重 load pth
-    with open('CNN_model.pth','rb') as f:
-        DL_model=torch.load(f)
-    # model.load_state_dict(torch.load('CNN_model.pth'))    
-    print(103,DL_model)
-    input=torch.tensor(input_img)
-    print(117,input.shape)
-    output=DL_model(input)
-    print(117,output)
-    # 模型保存為pth 文件
-    # preprocessing input img
-    # img_tensor=image_loader(input_img)
-
-    # string list
-    # key=['vango','monet']
-    # if key in key_string:
-    #     # model evaluation
-    #     DLmodel.eval()
-    #     # model produce
-    #     generator_img=DLmodel(input_img)
-    #     print(97,generator_img)
-    #     return 'success!'
-    # return jsonify({'data':{'result':generator_img,'type':'image'}})
-
+    print(125,generated_image.shape)
+    return generated_image.to(device,torch.float)
 
 
 @app.route('/img_backend', methods=['GET', 'POST'])
 def upload_data():
     path_list=[]
     # 初始化img_b64為空值
-    img_b64=''
-    img_process=''
+    img_b64=""
+    img_process=""
     # 接收json 參數類型
     if request.method=='POST': 
-        img=request.get_data()
-        print(126,img)
-        # get string 
-        # key_string=request.get_json()
-        # print(149,key_string)
+        file=request.form['image']
+        print(190,file)
+        style=request.form['style']
+        print(187,style)
 
         # 圖像處理
-        img_process=preprocess_img(img)
-        print(117,img_process)
-        final_img=load_model(img_process)
-        print(131, final_img)
-
-    
-                # 進行圖像轉換
-                # generated_img=load_model(img_process)
-                # print(generated_img.shape)
-                # 將圖片返回前端模板
+        resized_img=preprocess_img(file)
+        # 進行圖像轉換
+        gen_img=model_generate(resized_img)
+        # 將圖片返回前端模板
         # img_b64=show_img(img_process)
-                # print(img_b64)         
-                # index.save(os.path.join(app.config['UPLOAD_FOLDER'],secure_filename(index.filename)))    
-    # return render_template('img_upload.html',img_b64=img_b64)
+        # print(img_b64)         
+        # index.save(os.path.join(app.config['UPLOAD_FOLDER'],secure_filename(index.filename)))    
         # return jsonify({'data':{'result':img_b64,'type':'image'}})
         return 'end'
     
-# 接收前端字串
-def accepter():
-    pass
-
-
 
 if __name__ == '__main__':
     host_ip='127.0.0.1'

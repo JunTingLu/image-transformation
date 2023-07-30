@@ -11,22 +11,51 @@ from tensorboardX import SummaryWriter
 
 #Loadung the model vgg19 that will serve as the base model
 model=models.vgg19(pretrained=True).features
-# the vgg19 model has three components :
-    #features: containg all the conv, relu and maxpool
-    #avgpool: containing the avgpool layer
-    #classifier: contains the Dense layer(FC part of the model) 
+
+ #Assigning the GPU to the variable device
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+# defing a function that will load the image and perform the required preprocessing and put it on the GPU
+def image_loader(path,is_cuda=False):
+    image=Image.open(path)
+    print(59,image.shape)
+    #defining the image transformation steps to be performed before feeding them to the model
+    loader=transforms.Compose([transforms.Resize((512,512)),transforms.ToTensor()])
+    #The preprocessing steps involves resizing the image and then converting it to a tensor
+    image=loader(image).unsqueeze(0)
+    return image.to(device,torch.float)
 
 
-#Assigning the GPU to the variable device
-device=torch.device("cuda")
+# Network 
+# Resblock
+class ResidualBlock(nn.Module):
+    def __init__(self, in_features, expansion=1, num_blocks=2,use_dropout=False):
+        super(ResidualBlock, self).__init__()
+        layers = []
+        for _ in range(num_blocks):
+            layers += [
+                nn.ReflectionPad2d(1),
+                nn.Conv2d(in_features * expansion, in_features, 3),
+                nn.InstanceNorm2d(in_features),
+                nn.LeakyReLU(0.2, inplace=True),
+                nn.ReflectionPad2d(1),
+                nn.Conv2d(in_features * expansion, in_features, 3),
+                nn.InstanceNorm2d(in_features),
+            ]
+            # to avoid over-fitting (only left 80%)
+            # if use_dropout:
+            #     layers += [nn.Dropout(0.2)]
+        """ use Sequential collect "list" of layers"""
+        self.block = nn.Sequential(*layers)
+
+    def forward(self, x):
+        return x + self.block(x)
 
 
-#[0,5,10,19,28] are the index of the layers we will be using to calculate the loss as per the paper of NST
-#Defining a class that for the model
+# VGGnet
 class VGG(nn.Module):
     def __init__(self):
         super(VGG,self).__init__()
-        #Here we will use the following layers and make an array of their indices
         # 0: block1_conv1
         # 5: block2_conv1
         # 10: block3_conv1
@@ -35,9 +64,8 @@ class VGG(nn.Module):
         self.req_features= ['0','5','10','19','28'] 
         #Since we need only the 5 layers in the model so we will be dropping all the rest layers from the features of the model
         self.model=models.vgg19(pretrained=True).features[:29] #model will contain the first 29 layers
-    
-   
-    #x holds the input tensor(image) that will be feeded to each layer
+       
+    # x holds the input tensor(image) that will be feeded to each layer
     def forward(self,x):
         #initialize an array that wil hold the activations from the chosen layers
         features=[]
@@ -47,33 +75,23 @@ class VGG(nn.Module):
             x=layer(x)
             #appending the activation of the selected layers and return the feature array
             if (str(layer_num) in self.req_features):
-                features.append(x)
-                
+                features.append(x)    
         return features
 
 
-
-#defing a function that will load the image and perform the required preprocessing and put it on the GPU
-def image_loader(path):
-    image=Image.open(path)
-    #defining the image transformation steps to be performed before feeding them to the model
-    loader=transforms.Compose([transforms.Resize((512,512)),transforms.ToTensor()])
-    #The preprocessing steps involves resizing the image and then converting it to a tensor
-    image=loader(image).unsqueeze(0)
-    return image.to(device,torch.float)
-
-
-
 #Loading the original and the style image
-original_image=image_loader("D:/Aaron/origin/america.jpg")
-style_image=image_loader('D:/Aaron/style/style.jpg')
+original_image=image_loader("..input/Sakura.jpg")
+style_image=image_loader('..input/style.jpg')
 
-#Creating the generated image from the original image
+#Creating the generated image from the original image (copy 原圖)
 generated_image=original_image.clone().requires_grad_(True)
+# 原圖片加入random noise (initialization, for ex:white or gaussian)
+
+
 
 def calc_content_loss(gen_feat,orig_feat):
     #calculating the content loss of each layer by calculating the MSE between the content and generated features and adding it to content loss
-    content_l=torch.mean((gen_feat-orig_feat)**2)#*0.5
+    content_l=torch.mean((gen_feat-orig_feat)**2) #*0.5
     return content_l
 
 def calc_style_loss(gen,style):
@@ -84,7 +102,7 @@ def calc_style_loss(gen,style):
     A=torch.mm(style.view(channel,height*width),style.view(channel,height*width).t())
         
     #Calcultating the style loss of each layer by calculating the MSE between the gram matrix of the style image and the generated image and adding it to style loss
-    style_l=torch.mean((G-A)**2)#/(4*channel*(height*width)**2)
+    style_l=torch.mean((G-A)**2) #/(4*channel*(height*width)**2)
     return style_l
 
 def calculate_loss(gen_features, orig_feautes, style_featues):
@@ -99,36 +117,47 @@ def calculate_loss(gen_features, orig_feautes, style_featues):
     return total_loss
 
 
-#Load the model to the GPU
+#Load the model to the GPU ( eval() --> vgg funtion 參數不會更動)
 model=VGG().to(device).eval() 
 
-#initialize the paramerters required for fitting the model
+#initialize the parameters required for fitting the model
 epoch=200
 lr=0.004
 # lr=0.0004
-alpha=10
-beta=90
+# ratio of apha/beta (1e1, 1e2, 1e3, 1e4),
+alpha=10 # content weight
+beta=100 #style weight
 
 #using adam optimizer and it will update the generated image not the model parameter 
 optimizer=optim.Adam([generated_image],lr=lr)
 # log with process
 log_dir='logs_result/'
 log=log_dir
+
+
+# tv loss (增加圖片銳利度)
+
+# torch.save(model.state_dict(),path)
+# model=...
+
+# lr scheduler 調整
+def scheduler():
+    pass
+
+
 #iterating for 1000 times
 for e in range (epoch):
-    
     writer = SummaryWriter(log)
     #extracting the features of generated, content and the original required for calculating the loss
-    gen_features=model(generated_image)
+    gen_features=model(generated_image) 
     orig_feautes=model(original_image)
-    style_featues=model(style_image)
-    
+    style_featues=model(style_image) 
     #iterating over the activation of each layer and calculate the loss and add it to the content and the style loss
     total_loss=calculate_loss(gen_features, orig_feautes, style_featues)
     #optimize the pixel values of the generated image and backpropagate the loss
     optimizer.zero_grad()
     total_loss.backward()
-    optimizer.step()
+    optimizer.step() # 每個epoch更新generated_image 參數
     writer.add_scalar('Loss', total_loss, e)
     print(134,writer)
     #print the image and save it after each 100 epoch, bc it would happen over-fitting when epoch>200
@@ -139,8 +168,9 @@ for e in range (epoch):
     if (e%150)==0:
         print(total_loss)
         save_image(generated_image,"D:/Aaron/gen.png")
-    with open("/CNN_model.pth", "wb") as f:
-      torch.save(model, f)
+with open("/CNN_model.pth", "wb") as f:
+    torch.save(model.state_dict(), f)
+
 #%%
 # 啟動tensorboard查看訓練曲線
 """ inspect log """
@@ -149,6 +179,3 @@ for e in range (epoch):
 # %tensorboard --logdir=logs_result/
 # %reload_ext tensorboard    
         
-    
-        
-
