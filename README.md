@@ -29,6 +29,6 @@
 # 使用API
 >- croppie.js
 
-# docker 部署
+# Get start
 
 
