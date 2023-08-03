@@ -12,13 +12,12 @@ from tensorboardX import SummaryWriter
 #Loadung the model vgg19 that will serve as the base model
 model=models.vgg19(pretrained=True).features
 
- #Assigning the GPU to the variable device
+#Assigning the GPU to the variable device
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # defing a function that will load the image and perform the required preprocessing and put it on the GPU
-def image_loader(path,is_cuda=False):
+def image_loader(path):
     image=Image.open(path)
-    print(59,image.shape)
     #defining the image transformation steps to be performed before feeding them to the model
     loader=transforms.Compose([transforms.Resize((512,512)),transforms.ToTensor()])
     #The preprocessing steps involves resizing the image and then converting it to a tensor
@@ -56,11 +55,6 @@ class ResidualBlock(nn.Module):
 class VGG(nn.Module):
     def __init__(self):
         super(VGG,self).__init__()
-        # 0: block1_conv1
-        # 5: block2_conv1
-        # 10: block3_conv1
-        # 19: block4_conv1
-        # 28: block5_conv1
         self.req_features= ['0','5','10','19','28'] 
         #Since we need only the 5 layers in the model so we will be dropping all the rest layers from the features of the model
         self.model=models.vgg19(pretrained=True).features[:29] #model will contain the first 29 layers
@@ -80,8 +74,8 @@ class VGG(nn.Module):
 
 
 #Loading the original and the style image
-original_image=image_loader("..input/Sakura.jpg")
-style_image=image_loader('..input/style.jpg')
+original_image=image_loader("output/content/Sakura.jpg")
+style_image=image_loader("output/style/style.jpg")
 
 #Creating the generated image from the original image (copy 原圖)
 generated_image=original_image.clone().requires_grad_(True)
@@ -124,30 +118,15 @@ model=VGG().to(device).eval()
 epoch=200
 lr=0.004
 # lr=0.0004
-# ratio of apha/beta (1e1, 1e2, 1e3, 1e4),
 alpha=10 # content weight
 beta=100 #style weight
 
 #using adam optimizer and it will update the generated image not the model parameter 
 optimizer=optim.Adam([generated_image],lr=lr)
-# log with process
-log_dir='logs_result/'
-log=log_dir
-
-
-# tv loss (增加圖片銳利度)
-
-# torch.save(model.state_dict(),path)
-# model=...
-
-# lr scheduler 調整
-def scheduler():
-    pass
-
 
 #iterating for 1000 times
 for e in range (epoch):
-    writer = SummaryWriter(log)
+    # writer = SummaryWriter(log)
     #extracting the features of generated, content and the original required for calculating the loss
     gen_features=model(generated_image) 
     orig_feautes=model(original_image)
@@ -158,17 +137,14 @@ for e in range (epoch):
     optimizer.zero_grad()
     total_loss.backward()
     optimizer.step() # 每個epoch更新generated_image 參數
-    writer.add_scalar('Loss', total_loss, e)
-    print(134,writer)
+    # writer.add_scalar('Loss', total_loss, e)
+    # print(134,writer)
     #print the image and save it after each 100 epoch, bc it would happen over-fitting when epoch>200
-    # 若e除150的餘數!=0
-    # if(not (e%150)):
-    # 紀錄最小的loss epoch
-    # min_loss=min(total_loss)
     if (e%150)==0:
         print(total_loss)
-        save_image(generated_image,"D:/Aaron/gen.png")
-with open("/CNN_model.pth", "wb") as f:
+        save_image(generated_image,"output/gen.png")
+
+with open("/NST_CNN_model.pth", "wb") as f:
     torch.save(model.state_dict(), f)
 
 #%%

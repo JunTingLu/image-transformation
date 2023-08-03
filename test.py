@@ -3,9 +3,9 @@ import torch
 import torchvision.models as models
 
 #Loadung the model vgg19 that will serve as the base model
-model=models.vgg19(pretrained=True).features
+# model=models.vgg19(pretrained=True).features
 
- #Assigning the GPU to the variable device
+#Assigning the GPU to the variable device
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # test data to model
@@ -22,7 +22,6 @@ class VGG(nn.Module):
             if (str(layer_num) in self.req_features):
                 features.append(x)    
         return features
-
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")    
+   
 model=VGG().to(device).eval()
-model.load_state_dict(torch.load('CNN_model.pth'))
+# model.load_state_dict('CNN_model.pth')

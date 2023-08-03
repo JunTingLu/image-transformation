@@ -55,9 +55,9 @@ var $uploadCrop,
             size: {width:  256, height: 256}
         }).then(function (resize) {
             $('#oldImg').attr('src', resize);
-            console.log(58,oldImg)
             $('#cropImagePop').modal('hide');
         });
     });
 
+    // submit button
 

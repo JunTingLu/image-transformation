@@ -98,16 +98,16 @@ transition: transform calc(var(--d) * 1.5) var(--e), -webkit-transform calc(var(
 } */
 
 .card:nth-child(1):before {
-  background-image: url(https://www.vincentvangogh.org/images/self-portrait.jpg);
-}
-.card:nth-child(2):before {
   background-image: url(https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg/640px-Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg);
 }
+.card:nth-child(2):before {
+  background-image: url(https://scontent.ftpe6-1.fna.fbcdn.net/v/t1.18169-9/10441199_414933528678348_7485255079752473403_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=8bfeb9&_nc_ohc=nYVLVlnpJQwAX-uxbTf&_nc_oc=AQkbwORBLWqUS-cVVUPnCt5xjoTwNocE857ebAojs7Qx5FdzTVCebWSpNVKHgjwSMCk&_nc_ht=scontent.ftpe6-1.fna&oh=00_AfD01WDT5ngrqfAkG-pKb6eL2idpKmqFOpz1RfMsAH_y6g&oe=64F05DDF);
+}
 .card:nth-child(3):before {
-  background-image: url(https://gregcartmell.com/wp-content/uploads/2018/02/claude-monet-plein-air-painting.jpg);
+  background-image: url(https://www.ppaper.net/ckfinder/connector?command=Proxy&lang=zh-tw&type=Images&currentFolder=%2F2021-03-06-Mateusz%20Urbanowicz%2F&hash=ea8d60299e82343398f8ef2451c2b22b3c8cc8c6&fileName=10.jpg);
 }
 .card:nth-child(4):before {
-  background-image: url(https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/The_Water-Lily_Pond_1899_Claude_Monet_Metropolitan.jpg/1024px-The_Water-Lily_Pond_1899_Claude_Monet_Metropolitan.jpg);
+  background-image: url(https://tgi13.jia.com/118/085/18085627.jpg);
 }
 
 

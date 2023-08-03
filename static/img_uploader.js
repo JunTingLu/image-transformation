@@ -3,7 +3,6 @@ const myFile = document.querySelector('#upload-file')
 const submit=document.querySelector('#submitbtn')
 const img = document.querySelector('#oldImg')
 const img_display=document.querySelector('#newImg')
-    // let selectedFile;
 
 // function upload_file(){
 //     myFile.addEventListener('change', function(e){
@@ -43,14 +42,12 @@ const img_display=document.querySelector('#newImg')
 
 
 // image transform btn event
-const trsbtn=document.querySelector('#transform')
+// const trsbtn=document.querySelector("#transform")
 // four types of paintings
-const stylebtn=document.querySelector('#card-btn')
-
-// save the string in feature when the chose-btn is clicked
-style="vango"
-stylebtn.addEventListener('click',(e)=>{
-    console.log(54,e.target)
+const stylebtn=document.querySelector(".card-btn")
+style="vango"  //default
+console.log(48,stylebtn)
+stylebtn.addEventListener("click",(e)=>{
     style=e.target.id
     // 只保留feature當前選擇的字串
     console.log(55,style)
@@ -59,7 +56,6 @@ stylebtn.addEventListener('click',(e)=>{
 
 $('#submitbtn').on('click', function (ev) {
     var img_url =oldImg.src;
-    console.log(65,img_url)
     data=new FormData()
     data.append('image',img_url)
     data.append('style',style)
@@ -73,32 +69,6 @@ $('#submitbtn').on('click', function (ev) {
         // var newimg=data.result;     
     })
 })
-
-// deliver the string with different painting types
-trsbtn.addEventListener('click',()=>{
-    // data=new FormData()
-    // data.append('style',features)
-    // fetch('http://127.0.0.1:5000/img_backend',{
-    //     method:'POST',
-    //     body:data
-    // }).then(({data})=>{
-    //     // 清空features
-    //     features=""
-    //     if (data.result===''){
-    //         return 'error'
-    //     }
-    //     // 延遲顯示圖片
-    //     setTimeout(function(){
-    //         if (data.type==='image'){
-    //             img_display.src=data.image;
-    //             setTimeout(function(){
-    //             },500);
-    //             return
-    //         }
-    //     })
-    // })
-})
-
 
 
 // 下載轉換後的圖片(Blob URL)
