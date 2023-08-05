@@ -41,21 +41,23 @@ const img_display=document.querySelector('#newImg')
 // }
 
 
-// image transform btn event
-// const trsbtn=document.querySelector("#transform")
-// four types of paintings
-const stylebtn=document.querySelector(".card-btn")
-style="vango"  //default
-console.log(48,stylebtn)
-stylebtn.addEventListener("click",(e)=>{
-    style=e.target.id
-    // 只保留feature當前選擇的字串
-    console.log(55,style)
-})
+// Choose image style 
+const styleButtons = document.querySelectorAll(".card-btn");
+style = "vango"; // 預設值
+console.log(48, styleButtons);
+
+styleButtons.forEach(btn => {
+    btn.addEventListener("click", (e) => {
+        style = e.target.id;
+        // 只保留feature當前選擇的字串
+        console.log(55, style);
+    });
+});
+
 
 
 $('#submitbtn').on('click', function (ev) {
-    var img_url =oldImg.src;
+    var img_url =img.src;
     data=new FormData()
     data.append('image',img_url)
     data.append('style',style)

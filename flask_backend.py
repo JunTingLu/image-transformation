@@ -15,7 +15,7 @@ from torchvision.utils import save_image
 import base64
 from flask_cors import CORS
 from utils import *
-from test import *
+from test import model
 
 
 app = Flask(__name__)
@@ -76,7 +76,7 @@ def show_img(input_img):
 def model_generate(origin_img,style_img):
     target_dir="nst_cnn_model.pth"
     if os.path.exists(target_dir):
-        with open(target_dir, "rb") as f:
+        with open(target_dir) as f:
             torch.load(model.state_dict(), f)
     else:
         pass
@@ -96,8 +96,8 @@ def model_generate(origin_img,style_img):
         optimizer.zero_grad()
         total_loss.backward()
         optimizer.step() # update gen_img parameters
-        if (e%150)==0:
-            save_image(gen_img,"nst.png")
+        if e==epoch-1:
+            save_image(gen_img,"nst_{}.png".format(e))
             return  gen_img
 
 
@@ -125,7 +125,7 @@ def upload_data():
     if request.method=='POST': 
         file=request.form['image']
         style=request.form['style']
-        print(187,style)
+        print(187,file)
         # 圖像處理
         resized_img=preprocess_img(file)
         print(140, resized_img)
@@ -135,25 +135,14 @@ def upload_data():
         style_img=Image.open("./output/style/{}.jpg".format(style))
         style_img=image_loader(style_img)
 
-
-        print(138)
-
-        gen_img=model_generate(resized_img,style_img)
-        print(142,gen_img.shape)
+        # gen_img=model_generate(resized_img,style_img)
+        # print(142,gen_img.shape)
         # 將圖片返回前端模板
         # img_b64=show_img(gen_img)
         # print(img_b64)         
         # index.save(os.path.join(app.config['UPLOAD_FOLDER'],secure_filename(index.filename)))    
         # return jsonify({'data':{'result':img_b64,'type':'image'}})
         return 'end'
-
-
-# image after cropping
-@app.route('/crop_backend', methods=['GET', 'POST'])
-def crop_data():
-    if request.method=='POST': 
-        file=request.form['image']
-    pass    
 
 
 

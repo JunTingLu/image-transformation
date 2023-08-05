@@ -24,4 +24,5 @@ class VGG(nn.Module):
         return features
    
 model=VGG().to(device).eval()
-# model.load_state_dict('CNN_model.pth')
+# with open('CNN_model.pth') as f:
+#     model.load_state_dict(f)
