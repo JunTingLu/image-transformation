@@ -21,9 +21,7 @@ from test import model
 app = Flask(__name__)
 CORS(app)
 
-app.config['UPLOAD_FOLDER'] ='../static/output/'  # 文件储存地址
-app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024 # 限制大小 24MB
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 #Assigning the GPU to the variable device
 device=torch.device("cuda")
 
@@ -39,7 +37,6 @@ def allowed_file(filename):
   
 # 取得圖片之base64編碼並傳至後端，後端將base64轉換回圖片進行預測
 def preprocess_img(data):
-    print(42,data)
     str_data=str(data)
     # 搜尋圖片內容 (移除標頭)
     start_index = str_data.find("data:image/png;base64")
@@ -60,10 +57,12 @@ def preprocess_img(data):
 
 def show_img(input_img):
     """ 將轉換照片回傳前端"""
-    success,encoded_img=cv2.imencode('.jpg', input_img)
+    # 將CUDA Tensor複製到主機內存
+    input_bytes=torch.tensor(input_img).cpu().numpy()
+    print(64,input_bytes)
     # 暫存圖片的二進位資料
     buffer=io.BytesIO()
-    buffer.write(encoded_img)
+    buffer.write(input_bytes)
     # 重新將資料讀寫指針移動到初始位置
     buffer.seek(0)
     # 將圖轉為base64編碼
@@ -74,45 +73,35 @@ def show_img(input_img):
 """ Model evaluation"""
 # model train
 def model_generate(origin_img,style_img):
-    target_dir="nst_cnn_model.pth"
-    if os.path.exists(target_dir):
-        with open(target_dir) as f:
-            torch.load(model.state_dict(), f)
-    else:
-        pass
+    save_dir="/logs_result/nst_cnn_model.pth"
     # transform style_img to array
     gen_img=origin_img.clone().requires_grad_(True)
     optimizer=optim.Adam([gen_img],lr=opt.lr)
-    epoch=200
+    epoch=opt.epoch
     #iterating for 1000 times
     for e in range (epoch):
-        #extracting the features of generated, content and the original required for calculating the loss
         gen_features=model(gen_img) 
         orig_features=model(origin_img)
         style_features=model(style_img) 
-        #iterating over the activation of each layer and calculate the loss and add it to the content and the style loss
         total_loss=calculate_loss(gen_features, orig_features, style_features)
-        #optimize the pixel values of the generated image and back-propagate the loss
-        optimizer.zero_grad()
         total_loss.backward()
         optimizer.step() # update gen_img parameters
         if e==epoch-1:
             save_image(gen_img,"nst_{}.png".format(e))
             return  gen_img
+    with open(save_dir) as f:
+        torch.load(model.state_dict(), f)
 
 
 def image_loader(input_img):
     # image=Image.open(input_img)
-    # normalization 
-
-    # transfer np.array to pillow (PIL)
+    # if input_img.shape[-1] != 3:
+    #     raise ValueError("Input image must have 3 channels (RGB format)")
+    # Transfer np.array to pillow (PIL)
     pil_image = Image.fromarray(np.uint8(input_img))
-    #defining the image transformation steps to be performed before feeding them to the model
     loader=transforms.Compose([transforms.Resize((512,512)),transforms.ToTensor()])
-    #The preprocessing steps involves resizing the image and then converting it to a tensor
     image=loader(pil_image).unsqueeze(0)
     #Creating the generated image from the original image (copy origin img as gen_img)
-    # generated_image=image.clone().requires_grad_(True)
     return image.to(device,torch.float)
 
 
@@ -125,25 +114,20 @@ def upload_data():
     if request.method=='POST': 
         file=request.form['image']
         style=request.form['style']
-        print(187,file)
         # 圖像處理
         resized_img=preprocess_img(file)
-        print(140, resized_img)
         resized_img=image_loader(resized_img)
-        print(134)
+        print(123,resized_img.shape)
         # 進行圖像轉換
-        style_img=Image.open("./output/style/{}.jpg".format(style))
+        style_img=Image.open("output/style/{}.png".format(style))
         style_img=image_loader(style_img)
 
-        # gen_img=model_generate(resized_img,style_img)
-        # print(142,gen_img.shape)
+        gen_img=model_generate(resized_img,style_img)
+        print(139,gen_img.shape)
         # 將圖片返回前端模板
-        # img_b64=show_img(gen_img)
-        # print(img_b64)         
-        # index.save(os.path.join(app.config['UPLOAD_FOLDER'],secure_filename(index.filename)))    
-        # return jsonify({'data':{'result':img_b64,'type':'image'}})
-        return 'end'
-
+        img_b64=show_img(gen_img)
+        print(142,img_b64)         
+        return jsonify({'data':{'result':img_b64,'type':'image'}})
 
 
 if __name__ == '__main__':

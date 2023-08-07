@@ -51,7 +51,7 @@ var $uploadCrop,
     $('#cropImageBtn').on('click', function (ev) {
         $uploadCrop.croppie('result', {
             type: 'base64',
-            format: 'png',
+            format: 'png,jpg',
             size: {width:  256, height: 256}
         }).then(function (resize) {
             $('#oldImg').attr('src', resize);

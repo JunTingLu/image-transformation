@@ -2,9 +2,6 @@ import torch.nn as nn
 import torch
 import torchvision.models as models
 
-#Loadung the model vgg19 that will serve as the base model
-# model=models.vgg19(pretrained=True).features
-
 #Assigning the GPU to the variable device
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -12,8 +9,9 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 class VGG(nn.Module):
     def __init__(self):
         super(VGG,self).__init__()
-        self.req_features= ['0','5','10','19','28'] 
-        self.model=models.vgg19(pretrained=True).features[:29] 
+        self.req_features= ['1','3','8','13','20','29']
+        #Loading the model vgg19 that will serve as the base model
+        self.model=models.vgg19(pretrained=True).features[:30] 
        
     def forward(self,x):
         features=[]
@@ -24,5 +22,6 @@ class VGG(nn.Module):
         return features
    
 model=VGG().to(device).eval()
-# with open('CNN_model.pth') as f:
-#     model.load_state_dict(f)
+# with open('CNN_model.pth',"rb") as f:
+#     torch.load(model.state_dict(),f)
+    # torch.load(model.state_dict(), f)

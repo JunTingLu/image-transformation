@@ -6,7 +6,7 @@ parser.add_argument("--lr",type=int,default=0.004)
 parser.add_argument("--const",type=int,default=1e-2)
 parser.add_argument("--alpha",type=int,default=1)
 parser.add_argument("--beta",type=int,default=100)
-parser.add_argument("--epoch",type=int,default=1000)
+parser.add_argument("--epoch",type=int,default=100)
 parser.add_argument("--optimizer",type=str,default="Adam")
 opt=parser.parse_args()
 alpha=1
@@ -36,5 +36,5 @@ def calculate_loss(gen_features, orig_features, style_features):
         style_loss+=calc_style_loss(gen,style)
     
     #calculating the total loss of e th epoch
-    total_loss=alpha*content_loss + beta*style_loss 
+    total_loss=opt.alpha*content_loss + opt.beta*style_loss 
     return total_loss

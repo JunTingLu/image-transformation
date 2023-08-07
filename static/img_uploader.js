@@ -55,7 +55,6 @@ styleButtons.forEach(btn => {
 });
 
 
-
 $('#submitbtn').on('click', function (ev) {
     var img_url =img.src;
     data=new FormData()
@@ -67,8 +66,9 @@ $('#submitbtn').on('click', function (ev) {
         body:data
     })
     .then(({data})=>{ 
+        back_img=data.result
         console.log('sucess')
-        // var newimg=data.result;     
+        img_display.src=back_img;     
     })
 })
 
