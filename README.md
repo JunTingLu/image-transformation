@@ -10,7 +10,6 @@
 <table>
 <tr>
   <td>
-    
     Function
   </td>
   <td>
