@@ -9,12 +9,8 @@
 # 使用說明
 <table>
 <tr>
-  <td>
-    Function
-  </td>
-  <td>
-    Status
-  </td>
+  <td>Function</td>
+  <td>Status</td>
 </tr>
 <tr>
   <td>
