@@ -11,10 +11,10 @@
 <tr>
   <td>
     
-    function
+    **Function**
   </td>
   <td>
-    status
+    **Status**
   </td>
 </tr>
 <tr>
