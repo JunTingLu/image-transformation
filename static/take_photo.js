@@ -7,7 +7,7 @@
         const selected =document.querySelector('#select')
         const to_oldimg=document.querySelector('#oldImg')
         // video.style.cssText="width:400px;height:400px;";
-        const constraints = { audio: true, video:{width:400,height:400}}
+        const constraints = { audio: true, video:{width:512,height:512}}
         // 擷取照片傳至canvas中
         const canvas = document.querySelector('#canvas');
         const context = canvas.getContext('2d');
@@ -50,7 +50,8 @@
         selected.addEventListener('click',()=>{
             var dataURL = canvas.toDataURL('image/jpeg');
             to_oldimg.src=dataURL
-            
+            console.log(53,to_oldimg)
+
             if (cameraStream){
                 console.log(50)
                 //  getTracks取得所有軌道(track)，返回MediaStreamTrack物件陣列，每個物件包含該軌道的相關資訊(（頻或視頻、ID、狀態)

@@ -9,8 +9,7 @@ parser.add_argument("--beta",type=int,default=100)
 parser.add_argument("--epoch",type=int,default=100)
 parser.add_argument("--optimizer",type=str,default="Adam")
 opt=parser.parse_args()
-alpha=1
-beta=100
+
 
 # loss function 
 def calc_content_loss(gen_feat,orig_feat):

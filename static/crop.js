@@ -52,12 +52,11 @@ var $uploadCrop,
         $uploadCrop.croppie('result', {
             type: 'base64',
             format: 'png,jpg',
-            size: {width:  256, height: 256}
+            size: {width: 256, height: 256}
         }).then(function (resize) {
             $('#oldImg').attr('src', resize);
             $('#cropImagePop').modal('hide');
         });
     });
 
-    // submit button
 

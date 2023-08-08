@@ -66,8 +66,8 @@ $('#submitbtn').on('click', function (ev) {
         body:data
     })
     .then(({data})=>{ 
+        console.log(69,'success')
         back_img=data.result
-        console.log('sucess')
         img_display.src=back_img;     
     })
 })

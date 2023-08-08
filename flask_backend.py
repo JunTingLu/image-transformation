@@ -17,23 +17,16 @@ from flask_cors import CORS
 from utils import *
 from test import model
 
-
 app = Flask(__name__)
 CORS(app)
 
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 #Assigning the GPU to the variable device
 device=torch.device("cuda")
 
 @app.route('/', methods=['GET'])
 def health_check():
     return 'success!'
-
-
-#檢查上傳檔案是否合法的函數
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS        
-
+        
   
 # 取得圖片之base64編碼並傳至後端，後端將base64轉換回圖片進行預測
 def preprocess_img(data):
@@ -44,10 +37,8 @@ def preprocess_img(data):
         start_index += len("data:image/png;base64")
     # utf-8 生成二進制 
     content= str_data[start_index:]
-
     # 對二進制進行編碼，生成base64字符串
     image_bytes = base64.b64decode(content)
-    print(44,image_bytes)
     # 二進制處理
     img=Image.open(io.BytesIO(image_bytes))
     img2arr=np.array(img)
@@ -55,8 +46,8 @@ def preprocess_img(data):
     return img2arr
 
 
+""" 將轉換照片回傳前端"""
 def show_img(input_img):
-    """ 將轉換照片回傳前端"""
     # 將CUDA Tensor複製到主機內存
     input_bytes=torch.tensor(input_img).cpu().numpy()
     print(64,input_bytes)
@@ -94,9 +85,6 @@ def model_generate(origin_img,style_img):
 
 
 def image_loader(input_img):
-    # image=Image.open(input_img)
-    # if input_img.shape[-1] != 3:
-    #     raise ValueError("Input image must have 3 channels (RGB format)")
     # Transfer np.array to pillow (PIL)
     pil_image = Image.fromarray(np.uint8(input_img))
     loader=transforms.Compose([transforms.Resize((512,512)),transforms.ToTensor()])
@@ -126,7 +114,8 @@ def upload_data():
         print(139,gen_img.shape)
         # 將圖片返回前端模板
         img_b64=show_img(gen_img)
-        print(142,img_b64)         
+        # image=Image.open(input_img)
+        print(142,img_b64)    
         return jsonify({'data':{'result':img_b64,'type':'image'}})
 
 

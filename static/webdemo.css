@@ -9,6 +9,9 @@ h1{
   color:#0f17f1;
 }
 
+.modal-title{
+  font-weight: bold;
+}
 
 #webtitle{
   text-align: center;
