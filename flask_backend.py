@@ -53,8 +53,9 @@ def show_img(input_img):
     print(64,numpy)
     # 將 Tensor 轉換為 NumPy 數組後，確保 C 順序
     input_numpy=np.ascontiguousarray(input_numpy)
-     # 將 NumPy 數組轉換為 base64 編碼的字符串
+     # 將 NumPy 數組轉換為 base64 編碼的字符串，並編成png格式
     _, encoded_img = cv2.imencode('.png', input_numpy)
+    # 通常json只能處理utf-8字串形式
     base64_image = base64.b64encode(encoded_img).decode('utf-8')
     
     # 暫存圖片的二進位資料
