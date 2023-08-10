@@ -68,8 +68,19 @@ $('#submitbtn').on('click', function (ev) {
     .then(({data})=>{ 
         console.log(69,'success')
         back_img=data.result
-        img_display.src=back_img;     
+        img_display.src=back_img;  
+        
+        // Create a download link for the image
+        const downloadLink = document.createElement('a');
+        downloadLink.href = back_img;  // Use the back_img URL as the download link
+        downloadLink.download = 'downloaded-image.jpg'; // Set the download filename
+
+        // Trigger the click event for the download link
+        downloadLink.click();
     })
+     .catch(error => {
+        console.error('Error:', error);
+    });
 })
 
 
