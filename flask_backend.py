@@ -46,6 +46,21 @@ def preprocess_img(data):
     return img2arr
 
 
+""" 將轉換照片回傳前端"""
+def show_img(input_img):
+    # 將CUDA Tensor複製到主機內存
+    input_bytes=torch.tensor(input_img).cpu().numpy()
+    print(64,input_bytes)
+    # 暫存圖片的二進位資料
+    buffer=io.BytesIO()
+    buffer.write(input_bytes)
+    # 重新將資料讀寫指針移動到初始位置
+    buffer.seek(0)
+    # 將圖轉為base64編碼
+    img_b64=base64.b64encode(buffer.getvalue()).decode()
+    return  img_b64
+
+
 """ Model evaluation"""
 # model train
 def model_generate(origin_img,style_img):
@@ -63,33 +78,10 @@ def model_generate(origin_img,style_img):
         total_loss.backward()
         optimizer.step() # update gen_img parameters
         if e==epoch-1:
-            path="./output/nst_{}.png".format(e)
-            save_image(gen_img,path)
-            return  path
-            
-    # with open(save_dir) as f:
-    #     torch.load(model.state_dict(), f)
-
-
-""" 將轉換照片回傳前端"""
-# def show_img(input_img):
-#     # 將CUDA Tensor複製到主機內存
-#     input_bytes=torch.tensor(input_img).cpu().numpy()
-#     print(64,input_bytes.shape)
-#     # Transfer (1,512,512,3) to (512,512,3) numpy
-#     transposed_data=np.transpose(input_bytes, (2, 3, 1, 0))
-#     print(56,transposed_data)
-#     # 
-#     contiguous_data = np.ascontiguousarray(transposed_data)
-    
-#     # 暫存圖片的二進位資料
-#     buffer=io.BytesIO()
-#     buffer.write(contiguous_data)
-#     # 重新將資料讀寫指針移動到初始位置
-#     buffer.seek(0)
-#     # 將圖轉為base64編碼
-#     img_b64=base64.b64encode(buffer.getvalue()).decode("utf-8")
-#     return img_b64
+            save_image(gen_img,"nst_{}.png".format(e))
+            return  gen_img
+    with open(save_dir) as f:
+        torch.load(model.state_dict(), f)
 
 
 def image_loader(input_img):

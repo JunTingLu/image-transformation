@@ -4,9 +4,15 @@ import argparse
 parser=argparse.ArgumentParser()
 parser.add_argument("--lr",type=int,default=0.004)
 parser.add_argument("--const",type=int,default=1e-2)
+<<<<<<< HEAD
 parser.add_argument("--alpha",type=float, default=1)
 parser.add_argument("--beta",type=float, default=100)
 parser.add_argument("--epoch",type=int,default=10)
+=======
+parser.add_argument("--alpha",type=int,'1')
+parser.add_argument("--beta",type=int,'100')
+parser.add_argument("--epoch",type=int,default=100)
+>>>>>>> 3295b4d8d1ecb340986b2e0098b2d374e51bf702
 parser.add_argument("--optimizer",type=str,default="Adam")
 opt=parser.parse_args()
 # alpha=1
