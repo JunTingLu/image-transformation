@@ -48,7 +48,7 @@
 
         // select the photo
         selected.addEventListener('click',()=>{
-            var dataURL = canvas.toDataURL('image/png');
+            var dataURL = canvas.toDataURL('image');
             to_oldimg.src=dataURL
             console.log(53,to_oldimg)
 
