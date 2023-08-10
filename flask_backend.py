@@ -49,15 +49,21 @@ def preprocess_img(data):
 """ 將轉換照片回傳前端"""
 def show_img(input_img):
     # 將CUDA Tensor複製到主機內存
-    input_bytes=torch.tensor(input_img).cpu().numpy()
-    print(64,input_bytes)
+    input_numpy=torch.tensor(input_img).cpu().numpy()
+    print(64,numpy)
+    # 將 Tensor 轉換為 NumPy 數組後，確保 C 順序
+    input_numpy=np.ascontiguousarray(input_numpy)
+     # 將 NumPy 數組轉換為 base64 編碼的字符串
+    _, encoded_img = cv2.imencode('.png', input_numpy)
+    base64_image = base64.b64encode(encoded_img).decode('utf-8')
+    
     # 暫存圖片的二進位資料
-    buffer=io.BytesIO()
-    buffer.write(input_bytes)
+    #buffer=io.BytesIO()
+    #buffer.write(input_bytes)
     # 重新將資料讀寫指針移動到初始位置
-    buffer.seek(0)
+    #buffer.seek(0)
     # 將圖轉為base64編碼
-    img_b64=base64.b64encode(buffer.getvalue()).decode()
+    # img_b64=base64.b64encode(buffer.getvalue()).decode('utf-8')
     return  img_b64
 
 
