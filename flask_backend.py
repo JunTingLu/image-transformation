@@ -87,8 +87,7 @@ def model_generate(origin_img,style_img):
         if e==epoch-1:
             save_image(gen_img,"nst_{}.png".format(e))
             return  gen_img
-    with open(save_dir) as f:
-        torch.load(model.state_dict(), f)
+    torch.save(model.state_dict(), save_dir)
 
 
 def image_loader(input_img):
