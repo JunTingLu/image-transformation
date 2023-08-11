@@ -59,8 +59,7 @@
 </table>
 
 # 使用API
-前端使用croppie.js套件進行圖像剪裁
->- croppie.js
+>- croppie.js --> 前端使用croppie.js套件進行圖像剪裁
 
 # Get start
 build the docker image 
