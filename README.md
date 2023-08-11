@@ -1,15 +1,15 @@
 # Image-style transformation
-利用前後端串接實作一個能夠在網頁上進行圖片風格轉換，搭配拍照或式剪裁功能，並支持四種不同畫風，達到即時轉換的圖片風格的體驗感
+利用前後端串接實作一個能夠在網頁上進行圖片風格轉換，搭配及時拍照或式剪裁功能，並支持四種不同畫風(梵谷、莫內、素描、動漫)，達到即時轉換的圖片風格的體驗感
 
 # 開發環境
 >- python 3.8
->- flask
->- html,css,javascript
+>- cuda11.0
 
 # 使用流程及說明
-1. 選取欲轉換的風格圖 (default 為梵谷星空)
-2. 點選option中的submit，進行風格轉換
-3. 
+1. 選取欲轉換的風格圖 (default 為梵谷星空風格)
+2. 點選tools中的submit，進行風格轉換
+(建議調用cuda資源，加速圖像生成)
+
 <table>
 <tr>
   <td>Function</td>
@@ -39,11 +39,36 @@
     送出圖片，並進行風格轉換
   </td>
 </tr>
+  <tr>
+  <td>
+    Save image
+  </td>
+  <td>
+    儲存生成圖片
+  </td>
+</tr>
+  </tr>
+  <tr>
+  <td>
+    Clear
+  </td>
+  <td>
+    清除當前生成圖片
+  </td>
+</tr>
 </table>
 
 # 使用API
+前端使用croppie.js套件進行圖像剪裁
 >- croppie.js
 
 # Get start
+build the docker image 
+```
+
+```
+Run the ducker image you've build
+```
 
 
+```
