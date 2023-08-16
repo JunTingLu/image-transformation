@@ -4,6 +4,7 @@ import torchvision.models as models
 
 #Assigning the GPU to the variable device
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+model=models.vgg19(pretrained=True)
 
 # test data to model
 class VGG(nn.Module):
@@ -22,6 +23,5 @@ class VGG(nn.Module):
         return features
    
 model=VGG().to(device).eval()
-# with open('CNN_model.pth',"rb") as f:
-#     torch.load(model.state_dict(),f)
-    # torch.load(model.state_dict(), f)
+# with open('./output/nst_cnn_model.pth',"rb") as f:
+#     torch.load(f)
