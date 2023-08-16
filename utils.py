@@ -2,10 +2,11 @@ import torch
 import argparse
 
 parser=argparse.ArgumentParser()
+# choose the better parameters with good performance
 parser.add_argument("--lr",type=int,default=0.001)
 parser.add_argument("--alpha",type=int, default=1)
 parser.add_argument("--beta",type=int, default=100)
-parser.add_argument("--epoch",type=int,default=200)
+parser.add_argument("--epoch",type=int,default=150)
 parser.add_argument("--optimizer",type=str,default="Adam")
 opt=parser.parse_args()
 

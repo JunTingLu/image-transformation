@@ -10,8 +10,6 @@ style = "vango"; // default type
 styleButtons.forEach(btn => {
     btn.addEventListener("click", (e) => {
         style = e.target.id;
-        // 只保留feature當前選擇的字串
-        console.log(55, style);
     });
 });
 

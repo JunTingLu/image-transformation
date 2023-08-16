@@ -22,69 +22,8 @@ device=torch.device("cuda")
 @app.route('/', methods=['GET'])
 def health_check():
     return 'success!'
-
-
-
-# import torch.nn as nn
-# import torch
-# import torchvision.models as models
-
-# #Assigning the GPU to the variable device
-# device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-# model=models.vgg19(pretrained=True)
-
-# # test data to model
-# class VGG(nn.Module):
-#     def __init__(self):
-#         super(VGG,self).__init__()
-#         self.req_features= ['1','3','8','13','20','29']
-#         #Loading the model vgg19 that will serve as the base model
-#         self.model=models.vgg19(pretrained=True).features[:30] 
-       
-#     def forward(self,x):
-#         features=[]
-#         for layer_num,layer in enumerate(self.model):
-#             x=layer(x)
-#             if (str(layer_num) in self.req_features):
-#                 features.append(x)    
-#         return features
-   
-# model=VGG().to(device).eval()
-
-
-# alpha=1
-# beta=50
-
-# # Loss function 
-# def calc_content_loss(gen_feat,orig_feat):
-#     #calculating the content loss of each layer by calculating the MSE between the content and generated features and adding it to content loss
-#     content_l=torch.mean((gen_feat-orig_feat)**2) #*0.5
-#     return content_l
-
-
-# def calc_style_loss(gen,style):
-#     #Calculating the gram matrix for the style and the generated image
-#     batch_size,channel,height,width=gen.shape
-#     G=torch.mm(gen.view(channel,height*width),gen.view(channel,height*width).t())
-#     A=torch.mm(style.view(channel,height*width),style.view(channel,height*width).t()) 
-#     #Calculating the style loss of each layer by calculating the MSE between the gram matrix of the style image and the generated image and adding it to style loss
-#     style_l=torch.mean((G-A)**2) #/(4*channel*(height*width)**2)
-#     return style_l
-
-
-# def calculate_loss(gen_features, orig_features, style_features):
-#     style_loss=content_loss=0
-#     for gen,cont,style in zip(gen_features,orig_features,style_features):
-#         content_loss+=calc_content_loss(gen,cont)
-#         style_loss+=calc_style_loss(gen,style)
-#     #calculating the total loss of e th epoch
-#     total_loss=alpha*content_loss + beta*style_loss 
-#     return total_loss
-
-
-
   
-# 取得圖片之base64編碼並傳至後端，後端將base64轉換回圖片進行預測
+# Obtain the base64 encoding of an image and send it to the backend. The backend will then convert the base64 back to an image for prediction.
 def preprocess_img(data,type):
     str_data=str(data)
     # Search the image content and remove the title
@@ -94,19 +33,17 @@ def preprocess_img(data,type):
     else:
         print('unknown type')    
     content= str_data[start_index:]
-    # 對二進制進行編碼，生成base64字符串
+    # Encode binary data to generate a base64 string
     image_bytes = base64.b64decode(content)
-    # 二進制處理
+    # Binary processing
     img=Image.open(io.BytesIO(image_bytes))
     img2arr=np.array(img)
-    print(39,img2arr.shape)
     img_array=check_RGB(img2arr)
     return img_array
 
 
-# Judge the channel RGB
+# Check the channel RGB
 def check_RGB(input):
-    print(50,input.shape)
     if input.shape[2] == 4:
         print('The image is 4-channels')
         return input[:, :, :3]  #choose the 3-channels
@@ -114,7 +51,7 @@ def check_RGB(input):
         return input
 
 
-# Model train
+# Model training
 def model_generate(origin_img,style_img,type):
     save_dir="./output/nst_cnn_model.pth"
     # Transform style_img to array
@@ -132,9 +69,9 @@ def model_generate(origin_img,style_img,type):
         if e==epoch-1:
             save_path="./output/nst.{}".format(str(type))
             save_image(gen_img,save_path)
-            # Save pth
-            with open(save_dir,'wb') as f:
-                torch.save(model.state_dict(), f)
+            # Save model detail for first training
+            # with open(save_dir,'wb') as f:
+                # torch.save(model.state_dict(), f)
             return  save_path
 
 
@@ -153,7 +90,6 @@ def upload_data():
     if request.method=='POST': 
         file=request.form['image']
         style=request.form['style']
-        print(95,style)
         # Grab the sting of image type
         type=file.split(',')[0].split('/')[1].split(';')[0]
         # Preprocessing the image before training
