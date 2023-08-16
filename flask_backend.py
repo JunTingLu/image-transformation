@@ -104,6 +104,6 @@ def upload_data():
 
 
 if __name__ == '__main__':
-    host_ip='127.0.0.1'
+    host_ip='0.0.0.0'
     host_port='5000'
     app.run(host=host_ip,port=host_port,debug=True)
