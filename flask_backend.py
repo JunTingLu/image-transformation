@@ -13,6 +13,7 @@ import torch
 from utils import *
 from test import model
 
+
 app = Flask(__name__)
 CORS(app)
 
