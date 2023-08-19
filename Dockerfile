@@ -4,9 +4,6 @@ FROM python:3.9
 # 安裝 Nginx
 RUN apt-get update && apt-get install -y nginx
 
-# 設定 Nginx 配置文件
-# COPY nginx.conf /etc/nginx/nginx.conf
-
 # 建立工作目錄
 WORKDIR /app
 
@@ -15,9 +12,10 @@ COPY  . /var/www/html
 
 # 複製專案檔案到工作目錄
 COPY flask_backend.py .
-COPY DL_CNN.py .
+COPY test.py .
+COPY utils.py .
 COPY output .
-
+COPY entrypoint.sh .
 
 # 複製並安裝 Python 依賴套件清單
 COPY requirements.txt .

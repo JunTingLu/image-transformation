@@ -1,1 +1,1 @@
-docker build -t web-NST .
+docker build -t web-nst .
