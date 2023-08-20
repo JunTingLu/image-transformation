@@ -54,7 +54,7 @@ def check_RGB(input):
 
 # Model training
 def model_generate(origin_img,style_img,type):
-    save_dir="./output/nst_cnn_model.pth"
+    # save_dir="./output/nst_cnn_model.pth"
     # Transform style_img to array
     gen_img=origin_img.clone().requires_grad_(True)
     optimizer=optim.Adam([gen_img],lr=opt.lr)
@@ -107,4 +107,4 @@ def upload_data():
 if __name__ == '__main__':
     host_ip='0.0.0.0'
     host_port='5000'
-    app.run(host=host_ip,port=host_port,debug=True)
+    app.run(host=host_ip,port=host_port,debug=False) 
