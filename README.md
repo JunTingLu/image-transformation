@@ -4,11 +4,14 @@
 # 開發環境
 >- python 3.9
 >- cuda11.0
+>- torch 1.7.1
+>- torchvision 0.8.2
 
 # 使用流程及說明
-**1. 點選欲轉換的風格圖 (default 為梵谷星空風格)**<br>
-**2. 點選tools中的crop進行圖像剪裁，或是take photo進行及時照相**<br>
-**3. 點選submit，進行風格轉換**<br>
+**1. 建議在cuda環境下執行
+**2. 點選欲轉換的風格圖 (default 為梵谷星空風格)**<br>
+**3. 點選tools中的crop進行圖像剪裁，或是take photo進行及時照相**<br>
+**4. 點選submit，進行風格轉換**<br>
 **(pyhon建議能調用cuda資源，加速圖像生成)**
 
 <table>
