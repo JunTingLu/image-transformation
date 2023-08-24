@@ -12,7 +12,6 @@
 **2. 點選欲轉換的風格圖 (default 為梵谷星空風格)**<br>
 **3. 點選tools中的crop進行圖像剪裁，或是take photo進行及時照相**<br>
 **4. 點選submit，進行風格轉換**<br>
-**(pyhon建議能調用cuda資源，加速圖像生成)**
 
 <table>
 <tr>
@@ -63,19 +62,18 @@
 </table>
 
 # 使用API
->croppie.js (前端使用croppie.js套件進行圖像剪裁[2])
+> Croppie.js (前端使用croppie.js套件進行圖像剪裁[2])
 
 # Get start
 Build the docker image 
 ```
 docker build -t web-nst .
-
 ```
 Run the ducker image you've build
 ```
 docker run --rm --name web-nst -p 80:80 -p 5000:5000 web-nst
-
 ```
+
 # Reference
 1. ![Win10 安裝 CUDA、cuDNN 教學](https://medium.com/ching-i/win10-%E5%AE%89%E8%A3%9D-cuda-cudnn-%E6%95%99%E5%AD%B8-c617b3b76deb)
 2. ![Croppie](http://foliotek.github.io/Croppie/#documentation)
