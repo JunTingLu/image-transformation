@@ -20,6 +20,7 @@ CORS(app)
 #Assigning the GPU to the variable device
 device=torch.device("cuda")
 
+# api endpoint
 @app.route('/', methods=['GET'])
 def health_check():
     return 'success!'
