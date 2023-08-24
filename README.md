@@ -8,7 +8,7 @@
 >- torchvision 0.8.2
 
 # 使用流程及說明
-**1. 請先確認cuda能正常運行，相關教學可參考[**
+**1. 請先確認cuda能正常運行，相關教學可參考[1]**
 **2. 點選欲轉換的風格圖 (default 為梵谷星空風格)**<br>
 **3. 點選tools中的crop進行圖像剪裁，或是take photo進行及時照相**<br>
 **4. 點選submit，進行風格轉換**<br>
@@ -63,7 +63,7 @@
 </table>
 
 # 使用API
->croppie.js (前端使用croppie.js套件進行圖像剪裁)
+>croppie.js (前端使用croppie.js套件進行圖像剪裁[2])
 
 # Get start
 Build the docker image 
@@ -76,4 +76,5 @@ Run the ducker image you've build
 
 ```
 # Reference
-1. [Win10 安裝 CUDA、cuDNN 教學]!(https://medium.com/ching-i/win10-%E5%AE%89%E8%A3%9D-cuda-cudnn-%E6%95%99%E5%AD%B8-c617b3b76deb)
+1. ![Win10 安裝 CUDA、cuDNN 教學](https://medium.com/ching-i/win10-%E5%AE%89%E8%A3%9D-cuda-cudnn-%E6%95%99%E5%AD%B8-c617b3b76deb)
+2. ![Croppie](http://foliotek.github.io/Croppie/#documentation)
