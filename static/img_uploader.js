@@ -27,6 +27,7 @@ $('#submitbtn').on('click', function (ev) {
 
     .then((response) => response.blob()) //transfer the image file from flask with blob
     .then((blob)=>{ 
+            console.log("success")
             url = window.URL.createObjectURL(blob); // use url to read the blob concept
             img_display.src = url;  
     });

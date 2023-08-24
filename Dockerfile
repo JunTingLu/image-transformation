@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y nginx
 WORKDIR /app
 
 # 複製 HTML 文件到 Nginx 的默認網站目錄
-COPY  . /var/www/html
+COPY  .  /var/www/html
 
 # 複製專案檔案到工作目錄
 COPY flask_backend.py .

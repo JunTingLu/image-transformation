@@ -23,5 +23,5 @@ class VGG(nn.Module):
         return features
    
 model=VGG().to(device).eval()
-with open('./output/nst_cnn_model.pth',"rb") as f:
-    torch.load(f)
+# with open("/app/output/nst_cnn_model.pth","rb") as f:
+    # torch.load(f)

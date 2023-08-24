@@ -98,6 +98,7 @@ def upload_data():
         resized_img=image_loader(resized_img)
         # Decided the style image as input
         style_img=Image.open("./output/style/{}.png".format(style))
+        print(101)
         style_img=image_loader(style_img)
         # Generate the output image
         save_path=model_generate(resized_img,style_img,type)
@@ -107,4 +108,4 @@ def upload_data():
 if __name__ == '__main__':
     host_ip='0.0.0.0'
     host_port='5000'
-    app.run(host=host_ip,port=host_port,debug=False) 
+    app.run(host=host_ip,port=host_port,debug=True) 
