@@ -75,5 +75,5 @@ docker run --rm --name web-nst -p 80:80 -p 5000:5000 web-nst
 ```
 
 # Reference
-1. ![Win10 安裝 CUDA、cuDNN 教學](https://medium.com/ching-i/win10-%E5%AE%89%E8%A3%9D-cuda-cudnn-%E6%95%99%E5%AD%B8-c617b3b76deb)
-2. ![Croppie](http://foliotek.github.io/Croppie/#documentation)
+1. [Win10 安裝 CUDA、cuDNN 教學](https://medium.com/ching-i/win10-%E5%AE%89%E8%A3%9D-cuda-cudnn-%E6%95%99%E5%AD%B8-c617b3b76deb)
+2. [Croppie](http://foliotek.github.io/Croppie/#documentation)
