@@ -76,4 +76,4 @@ Run the ducker image you've build
 
 ```
 # Reference
-1. []!(https://medium.com/ching-i/win10-%E5%AE%89%E8%A3%9D-cuda-cudnn-%E6%95%99%E5%AD%B8-c617b3b76deb)
+1. [Win10 安裝 CUDA、cuDNN 教學]!(https://medium.com/ching-i/win10-%E5%AE%89%E8%A3%9D-cuda-cudnn-%E6%95%99%E5%AD%B8-c617b3b76deb)
