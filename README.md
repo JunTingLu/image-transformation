@@ -8,7 +8,7 @@
 >- torchvision 0.8.2
 
 # 使用流程及說明
-**1. 請先確認cuda能正常運行，相關教學可參考[1]**<br>
+**1. 請先確認cuda能正常運行，相關教學可參考 [1]**<br>
 **2. 點選欲轉換的風格圖 (default 為梵谷星空風格)**<br>
 **3. 點選tools中的crop進行圖像剪裁，或是take photo進行及時照相**<br>
 **4. 點選submit，進行風格轉換**<br>
@@ -68,11 +68,12 @@
 # Get start
 Build the docker image 
 ```
+docker build -t web-nst .
 
 ```
 Run the ducker image you've build
 ```
-
+docker run --rm --name web-nst -p 80:80 -p 5000:5000 web-nst
 
 ```
 # Reference
