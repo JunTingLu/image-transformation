@@ -4,6 +4,7 @@
 ![image](https://github.com/JunTingLu/image-transformation/assets/135250298/75728f00-9262-4101-8172-56a01a94ed2e)
 
 # 開發環境
+>- Window10 作業系統
 >- python 3.9
 >- cuda11.0
 >- torch 1.7.1
